@@ -4,6 +4,7 @@ import { config } from '../../config/config.js';
 import { logger } from '../utils/logger.js';
 import MessagingAPI from './messagingAPI.js';
 import PostSettingsService from './postSettingsService.js';
+import { isReplied, markReplied } from './repliedUsersStore.js';
 
 class WebhookService {
   constructor(postSettingsService, telegramBotService) {
@@ -67,8 +68,13 @@ class WebhookService {
         return;
       }
 
-      // Проверяем, не обрабатывали ли уже это сообщение
+      // Дубликат webhook-события
       if (this.messagingAPI.isProcessed(messageId)) {
+        return;
+      }
+
+      // Пользователь уже получал ответ — один раз навсегда
+      if (isReplied(senderId)) {
         return;
       }
 
@@ -99,6 +105,7 @@ class WebhookService {
 
         if (success) {
           this.messagingAPI.markAsProcessed(messageId);
+          markReplied(senderId);
           logger.info(`Обработано сообщение ${messageId} от ${senderId} с кодовым словом "${codeWord}" (пост: ${codeWordMatch.postId})`);
         }
       }
