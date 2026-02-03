@@ -25,18 +25,14 @@ class InstaBot {
     try {
       logger.info('Запуск Instagram бота...');
 
-      // Вход в Instagram
+      // Вход в Instagram (webhook работает без этого — через Messaging API)
       const loggedIn = await this.instagramService.login();
       if (!loggedIn) {
-        logger.error('Не удалось войти в Instagram. Проверьте учетные данные.');
-        process.exit(1);
+        logger.warn('Instagram Graph API недоступен. Webhook и админка запустятся, мониторинг комментариев/директов отключен.');
+      } else {
+        await this.commentMonitor.start();
+        await this.directMonitor.start();
       }
-
-      // Запуск мониторинга комментариев
-      await this.commentMonitor.start();
-
-      // Запуск мониторинга директов (через Graph API, если доступно)
-      await this.directMonitor.start();
 
       // Запуск webhook сервера для Messaging API
       this.webhookService.start();
