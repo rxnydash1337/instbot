@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  instabot:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: instabot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    ports:
+      - "3001:3001"  # Webhook порт
+      - "3002:3002"  # Админ панель
+      - "3003:3003"  # Landing page
+    networks:
+      - instabot-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "process.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  instabot-network:
+    driver: bridge
+

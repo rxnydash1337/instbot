@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page</title>
+    <link rel="stylesheet" href="/landing/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="main-title" data-content="title">Заголовок</h1>
+                <p class="subtitle" data-content="subtitle">Подзаголовок</p>
+                <button class="cta-button" id="join-button" data-endpoint="/api/join">
+                    ПРИСОЕДИНИТЬСЯ ЗА <span data-content="price">0</span> РУБЛЕЙ
+                </button>
+                <p class="access-note" data-content="access-note">доступ сразу</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Gift Section -->
+    <section class="gift-section">
+        <div class="container">
+            <h2 class="section-title" data-content="gift-title">Подарок после покупки</h2>
+            <div class="gift-content" id="gift-content" data-endpoint="/api/gift">
+                <!-- Контент загружается через API -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="reviews-section">
+        <div class="container">
+            <h2 class="section-title" data-content="reviews-title">Посмотрите отзывы</h2>
+            <div class="reviews-container" id="reviews-container" data-endpoint="/api/reviews">
+                <!-- Отзывы загружаются через API -->
+            </div>
+            <button class="cta-button" id="join-button-2" data-endpoint="/api/join">
+                ПРИСОЕДИНИТЬСЯ ЗА <span data-content="price">0</span> РУБЛЕЙ
+            </button>
+        </div>
+    </section>
+
+    <!-- What's Included Section -->
+    <section class="included-section">
+        <div class="container">
+            <h2 class="section-title" data-content="included-title">Что входит?</h2>
+            <div class="included-content" id="included-content" data-endpoint="/api/included">
+                <!-- Контент загружается через API -->
+            </div>
+        </div>
+    </section>
+
+    <!-- For Whom Section -->
+    <section class="for-whom-section">
+        <div class="container">
+            <h2 class="section-title" data-content="for-whom-title">Для кого это?</h2>
+            <div class="for-whom-content" id="for-whom-content" data-endpoint="/api/for-whom">
+                <!-- Контент загружается через API -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-content" id="stats-content" data-endpoint="/api/stats">
+                <!-- Статистика загружается через API -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta-section">
+        <div class="container">
+            <button class="cta-button large" id="join-button-3" data-endpoint="/api/join">
+                ПРИСОЕДИНИТЬСЯ ЗА <span data-content="price">0</span> РУБЛЕЙ
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-text" data-content="footer-text">Текст футера</p>
+        </div>
+    </footer>
+
+    <script src="/landing/script.js"></script>
+</body>
+</html>
+

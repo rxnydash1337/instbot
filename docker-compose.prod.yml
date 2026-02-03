@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  instabot:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: instabot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    networks:
+      - instabot-network
+    ports:
+      - "127.0.0.1:3000:3000"  # OAuth (только локально)
+      - "127.0.0.1:3001:3001"  # Webhook (через nginx)
+      - "127.0.0.1:3002:3002"  # Admin Panel (через nginx)
+      - "127.0.0.1:3003:3003"  # Landing (через nginx)
+    healthcheck:
+      test: ["CMD", "node", "-e", "process.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  instabot-network:
+    driver: bridge
+
