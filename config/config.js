@@ -13,16 +13,19 @@ export const config = {
     pageAccessToken: process.env.INSTAGRAM_PAGE_ACCESS_TOKEN || '', // Для Messaging API
   },
 
+  // Публичный URL (для логов и редиректов)
+  publicUrl: process.env.PUBLIC_URL || process.env.WEBHOOK_URL?.replace(/\/webhook\/?$/, '') || 'https://bazkod.ru',
+
   // Webhook настройки
   webhook: {
     port: parseInt(process.env.WEBHOOK_PORT) || 3001,
     verifyToken: process.env.WEBHOOK_VERIFY_TOKEN || 'your_verify_token_change_this',
-    webhookUrl: process.env.WEBHOOK_URL || 'https://your-domain.com/webhook',
+    webhookUrl: process.env.WEBHOOK_URL || 'https://bazkod.ru/webhook',
   },
 
   // OAuth настройки
   oauth: {
-    redirectUri: process.env.OAUTH_REDIRECT_URI || 'http://localhost:3000/oauth/callback',
+    redirectUri: process.env.OAUTH_REDIRECT_URI || 'https://bazkod.ru/oauth/callback',
     scope: process.env.OAUTH_SCOPE || 'instagram_basic,instagram_manage_comments,instagram_manage_messages,pages_show_list,pages_read_engagement',
     port: parseInt(process.env.OAUTH_PORT) || 3000,
     graphURL: 'https://graph.facebook.com/v18.0',

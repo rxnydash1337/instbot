@@ -112,7 +112,7 @@ class WebhookService {
     
     this.server = this.app.listen(this.port, () => {
       logger.info(`Webhook сервер запущен на порту ${this.port}`);
-      logger.info(`Webhook URL: http://your-domain.com:${this.port}/webhook`);
+      logger.info(`Webhook URL: ${config.webhook.webhookUrl}`);
       logger.info(`Verify Token: ${this.verifyToken}`);
     });
   }

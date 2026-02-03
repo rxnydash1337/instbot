@@ -121,7 +121,7 @@ class AdminPanel {
     
     this.server = this.app.listen(this.port, () => {
       logger.info(`Админ панель запущена на порту ${this.port}`);
-      logger.info(`Откройте в браузере: http://localhost:${this.port}`);
+      logger.info(`Админ панель: ${config.publicUrl}`);
     });
   }
 

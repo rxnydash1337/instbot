@@ -1,5 +1,6 @@
 /** API для одностраничного сайта */
 import express from 'express';
+import { config } from '../../config/config.js';
 import { logger } from '../utils/logger.js';
 
 class LandingAPI {
@@ -92,7 +93,7 @@ class LandingAPI {
     
     this.server = this.app.listen(this.port, () => {
       logger.info(`Landing API запущен на порту ${this.port}`);
-      logger.info(`Лендинг доступен: http://localhost:${this.port}/landing`);
+      logger.info(`Лендинг: ${config.publicUrl}/landing`);
     });
   }
 
