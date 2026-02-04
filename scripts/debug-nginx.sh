@@ -52,8 +52,12 @@ echo -e "${YELLOW}7. Активные конфиги nginx${NC}"
 ls -la /etc/nginx/sites-enabled/ 2>/dev/null
 echo ""
 
-echo -e "${YELLOW}8. Upstream в конфиге${NC}"
-grep -r "proxy_pass\|listen" /etc/nginx/sites-enabled/ 2>/dev/null || true
+echo -e "${YELLOW}8. Где bazkod.ru и proxy_pass?${NC}"
+grep -r "bazkod\|proxy_pass\|listen" /etc/nginx/ 2>/dev/null | head -60
+echo ""
+
+echo -e "${YELLOW}8b. Curl на бэкенд с сервера${NC}"
+curl -s -o /dev/null -w "127.0.0.1:3002 → %{http_code}\n" --connect-timeout 2 http://127.0.0.1:3002/ || echo "FAIL"
 echo ""
 
 echo -e "${YELLOW}9. Процессы node${NC}"
