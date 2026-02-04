@@ -38,8 +38,11 @@ async function loadPosts() {
         const posts = await res.json();
         renderPosts(posts);
     } catch (e) {
-        document.getElementById('posts-container').innerHTML =
-            '<div class="loading">Ошибка: ' + e.message + '</div>';
+        const c = document.getElementById('posts-container');
+        if (c) {
+            c.classList.add('loading');
+            c.innerHTML = '<p class="empty-state">Ошибка: ' + escapeHtml(e.message) + '</p>';
+        }
     }
 }
 
@@ -52,7 +55,7 @@ function renderPosts(posts) {
     const container = document.getElementById('posts-container');
     container.classList.remove('loading');
     if (!posts.length) {
-        container.innerHTML = '<p style="color: var(--text-muted);">Посты не найдены. Настройте Instagram Graph API.</p>';
+        container.innerHTML = '<p class="empty-state">Посты не найдены. Настройте Instagram Graph API.</p>';
         return;
     }
     container.innerHTML = posts.map(post => {
@@ -74,35 +77,35 @@ function renderPosts(posts) {
                         <div class="section-title">Instagram</div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Кодовое слово *</label>
-                                <input type="text" name="codeWord" value="${escapeHtml(post.settings?.codeWord || '')}" required placeholder="SECRET123">
+                                <label class="form-label">Кодовое слово *</label>
+                                <input type="text" name="codeWord" class="form-input" value="${escapeHtml(post.settings?.codeWord || '')}" required placeholder="SECRET123">
                             </div>
-                            <div class="form-group" style="grid-column: 1/-1">
-                                <label>Ответ на комментарий</label>
-                                <textarea name="commentReply">${escapeHtml(post.settings?.commentReply || 'напиши в директ!')}</textarea>
+                            <div class="form-group form-group-full">
+                                <label class="form-label">Ответ на комментарий</label>
+                                <textarea name="commentReply" class="form-textarea">${escapeHtml(post.settings?.commentReply || 'напиши в директ!')}</textarea>
                             </div>
-                            <div class="form-group" style="grid-column: 1/-1">
-                                <label>Ответ в директ</label>
-                                <textarea name="directReply">${escapeHtml(post.settings?.directReply || 'Спасибо! Нажми кнопку ниже.')}</textarea>
+                            <div class="form-group form-group-full">
+                                <label class="form-label">Ответ в директ</label>
+                                <textarea name="directReply" class="form-textarea">${escapeHtml(post.settings?.directReply || 'Спасибо! Нажми кнопку ниже.')}</textarea>
                             </div>
                         </div>
                     </div>
                     <div class="section">
                         <div class="section-title">Telegram — контент для кодового слова</div>
                         <div class="form-row">
-                            <div class="form-group" style="grid-column: 1/-1">
-                                <label>Сообщение в Telegram</label>
-                                <textarea name="telegramMessage" placeholder="Инструкция для пользователя">${escapeHtml(post.settings?.telegramMessage || 'Привет! Вот инструкция.')}</textarea>
+                            <div class="form-group form-group-full">
+                                <label class="form-label">Сообщение в Telegram</label>
+                                <textarea name="telegramMessage" class="form-textarea" placeholder="Инструкция для пользователя">${escapeHtml(post.settings?.telegramMessage || 'Привет! Вот инструкция.')}</textarea>
                             </div>
                             <div class="form-group">
-                                <label>URL редиректа</label>
-                                <input type="url" name="redirectUrl" value="${escapeHtml(post.settings?.redirectUrl || '')}" placeholder="t.me/бот?start=код">
+                                <label class="form-label">URL редиректа</label>
+                                <input type="url" name="redirectUrl" class="form-input" value="${escapeHtml(post.settings?.redirectUrl || '')}" placeholder="t.me/бот?start=код">
                             </div>
                         </div>
                     </div>
                     <div class="form-group checkbox-group">
-                        <input type="checkbox" name="enabled" id="enabled-${post.id}" ${post.settings?.enabled !== false ? 'checked' : ''}>
-                        <label for="enabled-${post.id}" style="margin:0">Активен</label>
+                        <input type="checkbox" name="enabled" id="enabled-${post.id}" class="form-checkbox" ${post.settings?.enabled !== false ? 'checked' : ''}>
+                        <label for="enabled-${post.id}" class="checkbox-label">Активен</label>
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">Сохранить</button>

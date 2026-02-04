@@ -62,11 +62,10 @@ async function loadGift() {
 }
 
 function renderGift(data) {
-    // Template for gift content
     return `
         <div class="gift-item">
-            <h3>${data.title || ''}</h3>
-            <p>${data.description || ''}</p>
+            <h3 class="gift-item-title">${data.title || ''}</h3>
+            <p class="gift-item-desc">${data.description || ''}</p>
         </div>
     `;
 }

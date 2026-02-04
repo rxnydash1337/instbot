@@ -153,6 +153,12 @@ body {
     color: var(--text-muted);
 }
 
+.empty-state {
+    color: var(--text-muted);
+    text-align: center;
+    padding: 48px 24px;
+}
+
 .post-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -247,6 +253,15 @@ body {
     gap: 20px;
 }
 
+.form-group-full {
+    grid-column: 1 / -1;
+}
+
+.checkbox-group label,
+.checkbox-label {
+    margin: 0;
+}
+
 .section {
     margin-bottom: 24px;
 }
@@ -264,6 +279,7 @@ body {
     margin-bottom: 16px;
 }
 
+.form-label,
 .form-group label {
     display: block;
     font-size: 13px;
@@ -272,7 +288,12 @@ body {
     margin-bottom: 6px;
 }
 
-input, textarea {
+.form-input,
+.form-textarea,
+input[type="text"],
+input[type="url"],
+input[type="password"],
+textarea {
     width: 100%;
     padding: 10px 14px;
     background: var(--bg);
@@ -283,6 +304,12 @@ input, textarea {
     font-family: inherit;
 }
 
+.form-textarea,
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
 input:focus, textarea:focus {
     outline: none;
     border-color: var(--accent);
@@ -291,11 +318,6 @@ input:focus, textarea:focus {
 input::placeholder, textarea::placeholder {
     color: var(--text-muted);
     opacity: 0.7;
-}
-
-textarea {
-    resize: vertical;
-    min-height: 80px;
 }
 
 .form-actions {
@@ -340,7 +362,8 @@ textarea {
     gap: 10px;
 }
 
-.checkbox-group input {
+.form-checkbox,
+.checkbox-group input[type="checkbox"] {
     width: auto;
 }
 
@@ -372,7 +395,8 @@ body.login-page {
     margin-bottom: 20px;
 }
 
-.login-form .btn {
+.login-form .btn,
+.login-form .btn-primary {
     width: 100%;
     padding: 14px;
     margin-top: 8px;

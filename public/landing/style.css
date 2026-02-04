@@ -118,6 +118,22 @@ body {
     box-shadow: var(--shadow);
 }
 
+.gift-item {
+    text-align: center;
+}
+
+.gift-item-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text);
+}
+
+.gift-item-desc {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
 .reviews-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
