@@ -12,6 +12,7 @@ RUN npm ci --omit=dev && npm cache clean --force
 # Копирование исходного кода
 COPY src/ ./src/
 COPY config/ ./config/
+COPY public/ ./public/
 
 RUN mkdir -p /app/logs /app/data
 
