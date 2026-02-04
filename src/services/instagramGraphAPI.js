@@ -12,7 +12,7 @@ class InstagramGraphAPI {
     this.processedDirects = new Set();
   }
 
-  async makeRequest(url, method = 'GET', body = null) {
+  async makeRequest(url, method = 'GET', body = null, { silent = false } = {}) {
     try {
       const options = {
         method,
@@ -34,7 +34,9 @@ class InstagramGraphAPI {
 
       return data;
     } catch (error) {
-      logger.error(`Ошибка запроса к Instagram API: ${url}`, error);
+      if (!silent) {
+        logger.error(`Ошибка запроса к Instagram API: ${url}`, error);
+      }
       throw error;
     }
   }
@@ -42,11 +44,10 @@ class InstagramGraphAPI {
   async validateToken() {
     try {
       const url = `${this.baseURL}/me?fields=id,username&access_token=${this.accessToken}`;
-      const data = await this.makeRequest(url);
+      const data = await this.makeRequest(url, 'GET', null, { silent: true });
       logger.info(`Токен валиден. Аккаунт: ${data.username} (${data.id})`);
       return true;
-    } catch (error) {
-      logger.error('Токен невалиден или истек', error);
+    } catch {
       return false;
     }
   }

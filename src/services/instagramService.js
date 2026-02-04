@@ -14,13 +14,11 @@ class InstagramService {
     try {
       const isValid = await this.api.validateToken();
       if (!isValid) {
-        logger.error('Токен доступа невалиден. Выполните OAuth авторизацию.');
         return false;
       }
       logger.info('Успешная авторизация через Instagram Graph API');
       return true;
-    } catch (error) {
-      logger.error('Ошибка авторизации в Instagram', error);
+    } catch {
       return false;
     }
   }
