@@ -2,7 +2,7 @@ let telegramBotInfo = null;
 
 async function loadTelegramInfo() {
     try {
-        const response = await fetch('/api/telegram/info');
+        const response = await fetch('/api/telegram/info', { credentials: 'include' });
         telegramBotInfo = await response.json();
         
         const infoDiv = document.getElementById('telegram-info');
@@ -24,7 +24,7 @@ async function loadTelegramInfo() {
 
 async function loadPosts() {
     try {
-        const response = await fetch('/api/posts');
+        const response = await fetch('/api/posts', { credentials: 'include' });
         const posts = await response.json();
         renderPosts(posts);
     } catch (error) {
@@ -53,26 +53,33 @@ function renderPosts(posts) {
                 </span>
             </div>
             <form class="settings-form" onsubmit="saveSettings(event, '${post.id}')">
-                <div class="form-group">
-                    <label>Кодовое слово *</label>
-                    <input type="text" name="codeWord" value="${post.settings?.codeWord || ''}" required>
+                <div class="section instagram">
+                    <h3>Instagram</h3>
+                    <div class="form-group">
+                        <label>Кодовое слово *</label>
+                        <input type="text" name="codeWord" value="${post.settings?.codeWord || ''}" required placeholder="Например: SECRET123">
+                    </div>
+                    <div class="form-group">
+                        <label>Ответ на комментарий</label>
+                        <textarea name="commentReply">${post.settings?.commentReply || 'напиши в директ!'}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Ответ в директ</label>
+                        <textarea name="directReply">${post.settings?.directReply || 'Спасибо за интерес! Нажми на кнопку ниже, чтобы получить инструкцию.'}</textarea>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Ответ на комментарий</label>
-                    <textarea name="commentReply">${post.settings?.commentReply || 'напиши в директ!'}</textarea>
-                </div>
-                <div class="form-group">
-                    <label>Ответ в директ</label>
-                    <textarea name="directReply">${post.settings?.directReply || 'Спасибо за интерес! Нажми на кнопку ниже, чтобы получить инструкцию.'}</textarea>
-                </div>
-                <div class="form-group">
-                    <label>Сообщение для Telegram бота</label>
-                    <textarea name="telegramMessage" placeholder="Инструкция, которая будет отправлена пользователю в Telegram">${post.settings?.telegramMessage || 'Привет! Вот инструкция для тебя.'}</textarea>
-                </div>
-                <div class="form-group">
-                    <label>URL для редиректа</label>
-                    <input type="url" name="redirectUrl" id="redirectUrl-${post.id}" value="${post.settings?.redirectUrl || ''}" placeholder="Автоматически сформируется из Telegram бота">
-                    ${telegramBotInfo?.available ? `<small style="color: #666; display: block; margin-top: 5px;">Бот: @${telegramBotInfo.botUsername} - URL будет: ${telegramBotInfo.botUrl}?start=КОДОВОЕ_СЛОВО</small>` : '<small style="color: #999; display: block; margin-top: 5px;">Telegram бот не настроен</small>'}
+                <div class="section telegram">
+                    <h3>Telegram — контент для кодового слова</h3>
+                    <p class="section-hint">Сообщение, которое получит пользователь при переходе по ссылке t.me/bot?start=КОДОВОЕ_СЛОВО</p>
+                    <div class="form-group">
+                        <label>Сообщение в Telegram</label>
+                        <textarea name="telegramMessage" placeholder="Инструкция, офер, ссылка...">${post.settings?.telegramMessage || 'Привет! Вот инструкция для тебя.'}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>URL редиректа</label>
+                        <input type="url" name="redirectUrl" value="${post.settings?.redirectUrl || ''}" placeholder="Авто: t.me/бот?start=код">
+                        ${telegramBotInfo?.available ? `<small>Бот: @${telegramBotInfo.botUsername}</small>` : ''}
+                    </div>
                 </div>
                 <div class="form-group checkbox-group">
                     <input type="checkbox" name="enabled" id="enabled-${post.id}" ${post.settings?.enabled !== false ? 'checked' : ''}>
@@ -112,6 +119,7 @@ async function saveSettings(event, postId) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
+            credentials: 'include',
         });
 
         const result = await response.json();
@@ -132,6 +140,7 @@ async function deleteSettings(postId) {
     try {
         const response = await fetch(`/api/posts/${postId}/settings`, {
             method: 'DELETE',
+            credentials: 'include',
         });
 
         const result = await response.json();

@@ -18,12 +18,27 @@ class AdminPanel {
     this.password = config.admin.password || 'admin';
   }
 
+  checkAuth(req, res, next) {
+    const auth = req.headers.authorization;
+    if (!auth || !auth.startsWith('Basic ')) {
+      res.setHeader('WWW-Authenticate', 'Basic realm="Admin"');
+      return res.status(401).send('Требуется авторизация');
+    }
+    const [, base64] = auth.split(' ');
+    const [user, pass] = Buffer.from(base64, 'base64').toString().split(':');
+    if (user === 'admin' && pass === this.password) {
+      return next();
+    }
+    res.setHeader('WWW-Authenticate', 'Basic realm="Admin"');
+    return res.status(401).send('Неверный пароль');
+  }
+
   setupRoutes() {
-    // Статические файлы (HTML, CSS, JS)
+    this.app.use(this.checkAuth.bind(this));
+
     this.app.use('/admin', express.static('public/admin'));
     this.app.use(express.static('public'));
 
-    // Главная страница админ панели
     this.app.get('/', (req, res) => {
       res.sendFile('index.html', { root: 'public/admin' });
     });
