@@ -3,6 +3,10 @@ let telegramBotInfo = null;
 async function loadTelegramInfo() {
     try {
         const response = await fetch('/api/telegram/info', { credentials: 'include' });
+        if (response.status === 401) {
+            window.location.href = '/login';
+            return;
+        }
         telegramBotInfo = await response.json();
         
         const infoDiv = document.getElementById('telegram-info');
@@ -25,6 +29,10 @@ async function loadTelegramInfo() {
 async function loadPosts() {
     try {
         const response = await fetch('/api/posts', { credentials: 'include' });
+        if (response.status === 401) {
+            window.location.href = '/login';
+            return;
+        }
         const posts = await response.json();
         renderPosts(posts);
     } catch (error) {

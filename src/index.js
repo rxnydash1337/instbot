@@ -1,4 +1,5 @@
 /** Главный файл запуска бота */
+import 'dotenv/config';
 import InstagramService from './services/instagramService.js';
 import CommentMonitor from './monitors/commentMonitor.js';
 import DirectMonitor from './monitors/directMonitor.js';

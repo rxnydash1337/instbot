@@ -63,7 +63,8 @@ class AdminPanel {
 
     this.app.post('/api/login', (req, res) => {
       const { username, password } = req.body || {};
-      if (username === 'admin' && password === this.password) {
+      const adminPassword = process.env.ADMIN_PASSWORD || config.admin.password || 'admin';
+      if (username === 'admin' && password === adminPassword) {
         const token = crypto.randomBytes(32).toString('hex');
         this.sessions.add(token);
         res.setHeader('Set-Cookie', `${SESSION_COOKIE}=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${SESSION_MAX_AGE / 1000}`);
