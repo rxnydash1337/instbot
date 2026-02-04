@@ -10,9 +10,71 @@ body {
     padding: 20px;
 }
 
+body.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 360px;
+}
+
+.login-box h1 {
+    margin-bottom: 24px;
+    font-size: 22px;
+    text-align: center;
+    color: #333;
+}
+
+.login-form .form-group {
+    margin-bottom: 16px;
+}
+
+.login-form button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+}
+
+.login-error {
+    color: #dc2626;
+    font-size: 13px;
+    margin-bottom: 12px;
+    min-height: 18px;
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.admin-header h1 {
+    margin-bottom: 0;
+}
+
+.logout-btn {
+    color: #666;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.logout-btn:hover {
+    color: #333;
 }
 
 h1 {

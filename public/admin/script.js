@@ -155,10 +155,14 @@ async function deleteSettings(postId) {
     }
 }
 
-// Загружаем информацию о Telegram боте и посты при загрузке страницы
+document.getElementById('logout-btn')?.addEventListener('click', async (e) => {
+    e.preventDefault();
+    await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+    window.location.href = '/login';
+});
+
 loadTelegramInfo().then(() => {
     loadPosts();
-    // Обновляем каждые 30 секунд
     setInterval(loadPosts, 30000);
 });
 

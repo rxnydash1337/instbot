@@ -1,9 +1,25 @@
 /** Админ панель для управления настройками постов */
+import crypto from 'crypto';
 import express from 'express';
 import InstagramService from './instagramService.js';
 import PostSettingsService from './postSettingsService.js';
 import { config } from '../../config/config.js';
 import { logger } from '../utils/logger.js';
+
+const SESSION_COOKIE = 'admin_session';
+const SESSION_MAX_AGE = 7 * 24 * 60 * 60 * 1000;
+
+function parseCookies(cookieHeader) {
+  if (!cookieHeader) return {};
+  return Object.fromEntries(
+    cookieHeader.split(';').map((s) => {
+      const eq = s.trim().indexOf('=');
+      const k = eq >= 0 ? s.slice(0, eq).trim() : s.trim();
+      const v = eq >= 0 ? s.slice(eq + 1).trim() : '';
+      return [decodeURIComponent(k), decodeURIComponent(v)];
+    })
+  );
+}
 
 class AdminPanel {
   constructor(instagramService, telegramBotService) {
@@ -16,21 +32,23 @@ class AdminPanel {
     this.server = null;
     this.port = config.admin.port || 3002;
     this.password = config.admin.password || 'admin';
+    this.sessions = new Set();
   }
 
   checkAuth(req, res, next) {
-    const auth = req.headers.authorization;
-    if (!auth || !auth.startsWith('Basic ')) {
-      res.setHeader('WWW-Authenticate', 'Basic realm="Admin"');
-      return res.status(401).send('Требуется авторизация');
-    }
-    const [, base64] = auth.split(' ');
-    const [user, pass] = Buffer.from(base64, 'base64').toString().split(':');
-    if (user === 'admin' && pass === this.password) {
+    const publicPaths = ['/login', '/admin/login.html', '/admin/style.css'];
+    if (publicPaths.includes(req.path) || req.path === '/api/login') {
       return next();
     }
-    res.setHeader('WWW-Authenticate', 'Basic realm="Admin"');
-    return res.status(401).send('Неверный пароль');
+    const cookies = parseCookies(req.headers.cookie);
+    const token = cookies[SESSION_COOKIE];
+    if (token && this.sessions.has(token)) {
+      return next();
+    }
+    if (req.path.startsWith('/api/')) {
+      return res.status(401).json({ error: 'Требуется авторизация' });
+    }
+    return res.redirect('/login');
   }
 
   setupRoutes() {
@@ -38,6 +56,29 @@ class AdminPanel {
 
     this.app.use('/admin', express.static('public/admin'));
     this.app.use(express.static('public'));
+
+    this.app.get('/login', (req, res) => {
+      res.sendFile('login.html', { root: 'public/admin' });
+    });
+
+    this.app.post('/api/login', (req, res) => {
+      const { username, password } = req.body || {};
+      if (username === 'admin' && password === this.password) {
+        const token = crypto.randomBytes(32).toString('hex');
+        this.sessions.add(token);
+        res.setHeader('Set-Cookie', `${SESSION_COOKIE}=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${SESSION_MAX_AGE / 1000}`);
+        return res.json({ success: true });
+      }
+      res.status(401).json({ success: false, error: 'Неверный логин или пароль' });
+    });
+
+    this.app.post('/api/logout', (req, res) => {
+      const cookies = parseCookies(req.headers.cookie);
+      const token = cookies[SESSION_COOKIE];
+      if (token) this.sessions.delete(token);
+      res.setHeader('Set-Cookie', `${SESSION_COOKIE}=; Path=/; HttpOnly; Max-Age=0`);
+      res.json({ success: true });
+    });
 
     this.app.get('/', (req, res) => {
       res.sendFile('index.html', { root: 'public/admin' });
