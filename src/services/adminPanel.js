@@ -63,8 +63,9 @@ class AdminPanel {
 
     this.app.post('/api/login', (req, res) => {
       const { username, password } = req.body || {};
-      const adminPassword = process.env.ADMIN_PASSWORD || config.admin.password || 'admin';
-      if (username === 'admin' && password === adminPassword) {
+      const p = (process.env.ADMIN_PASSWORD || '').trim();
+      const adminPassword = p || config.admin.password || 'admin';
+      if (username === 'admin' && password && password === adminPassword) {
         const token = crypto.randomBytes(32).toString('hex');
         this.sessions.add(token);
         res.setHeader('Set-Cookie', `${SESSION_COOKIE}=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${SESSION_MAX_AGE / 1000}`);
@@ -177,8 +178,9 @@ class AdminPanel {
     this.setupRoutes();
     
     this.server = this.app.listen(this.port, () => {
-      logger.info(`Админ панель запущена на порту ${this.port}`);
+      const pwdSet = !!(process.env.ADMIN_PASSWORD || '').trim();
       logger.info(`Админ панель: ${config.publicUrl}`);
+      if (!pwdSet) logger.warn('ADMIN_PASSWORD не задан — используется admin');
     });
   }
 

@@ -3,21 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админ панель - Instagram Bot</title>
+    <title>Админ панель</title>
     <link rel="stylesheet" href="/admin/style.css">
 </head>
 <body>
-    <div class="container">
-        <header class="admin-header">
-            <h1>Админ панель — Управление постами</h1>
-            <a href="#" id="logout-btn" class="logout-btn">Выйти</a>
-        </header>
-        <div id="telegram-info" style="margin-bottom: 20px; padding: 15px; background: #e3f2fd; border-radius: 8px; display: none;">
-            <strong>Telegram бот:</strong> <span id="bot-status">Загрузка...</span>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <span class="logo">InstaBot</span>
+            <a href="/landing" target="_blank" class="nav-link">Лендинг</a>
         </div>
-        <div id="posts-container" class="loading">Загрузка постов...</div>
-    </div>
+        <nav class="sidebar-nav">
+            <span class="nav-item active">Посты</span>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="#" id="logout-btn" class="logout-btn">Выйти</a>
+        </div>
+    </aside>
+    <main class="main">
+        <header class="topbar">
+            <h1>Настройки постов</h1>
+            <div id="telegram-info" class="telegram-badge"></div>
+        </header>
+        <section class="content">
+            <div id="posts-container" class="posts-grid loading">Загрузка...</div>
+        </section>
+    </main>
+    <div id="toast" class="toast"></div>
     <script src="/admin/script.js"></script>
 </body>
 </html>
-
