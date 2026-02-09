@@ -9,6 +9,14 @@ const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '../..');
 const settingsFile = path.join(projectRoot, 'data', 'post-settings.json');
 
+const WORD_PREFIX = 'word:';
+function wordKey(codeWord) {
+  return WORD_PREFIX + (codeWord || '').toLowerCase().trim();
+}
+function isWordKey(key) {
+  return typeof key === 'string' && key.startsWith(WORD_PREFIX);
+}
+
 // Создаем директорию для данных
 const dataDir = path.dirname(settingsFile);
 if (!fs.existsSync(dataDir)) {
@@ -84,12 +92,52 @@ class PostSettingsService {
   }
 
   findPostByCodeWord(codeWord) {
-    for (const [postId, settings] of Object.entries(this.settings)) {
-      if (settings.codeWord && settings.codeWord.toLowerCase() === codeWord.toLowerCase() && settings.enabled) {
-        return { postId, settings };
+    const normalized = (codeWord || '').toLowerCase().trim();
+    if (!normalized) return null;
+    for (const [key, settings] of Object.entries(this.settings)) {
+      if (settings.codeWord && settings.codeWord.toLowerCase() === normalized && settings.enabled) {
+        return { postId: key, settings };
       }
     }
     return null;
+  }
+
+  /** Настройки только по кодовому слову (без Instagram) — для ?start=слово */
+  setWordSettings(codeWord, settings = {}) {
+    const key = wordKey(codeWord);
+    if (!key || key === WORD_PREFIX) return false;
+    this.settings[key] = {
+      codeWord: (codeWord || '').trim(),
+      commentReply: '',
+      directReply: '',
+      redirectUrl: settings.redirectUrl || defaultSettings.redirectUrl,
+      telegramMessage: settings.telegramMessage || 'Привет! Вот инструкция для тебя.',
+      enabled: settings.enabled !== undefined ? settings.enabled : true,
+      createdAt: this.settings[key]?.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      wordOnly: true,
+    };
+    return this.saveSettings();
+  }
+
+  getWordSettings(codeWord) {
+    const key = wordKey(codeWord);
+    return key && key !== WORD_PREFIX ? this.settings[key] || null : null;
+  }
+
+  getAllWordSettings() {
+    return Object.entries(this.settings)
+      .filter(([key]) => isWordKey(key))
+      .map(([id, settings]) => ({ id, ...settings }));
+  }
+
+  deleteWordSettings(id) {
+    if (!id || !isWordKey(id)) return false;
+    if (this.settings[id]) {
+      delete this.settings[id];
+      return this.saveSettings();
+    }
+    return false;
   }
 
   checkCodeWord(text, postId = null) {

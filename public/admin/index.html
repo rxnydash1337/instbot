@@ -25,6 +25,31 @@
             <div id="telegram-info" class="telegram-badge"></div>
         </header>
         <section class="content">
+            <div class="section-block">
+                <h2 class="content-subtitle">Автоответ на ?start=слово (без Instagram)</h2>
+                <p class="content-desc">Ссылка: <code>t.me/ваш_бот?start=кодовое_слово</code>. Можно создавать без настройки Instagram.</p>
+                <div id="words-container" class="words-list loading">Загрузка...</div>
+                <form id="word-form" class="word-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Кодовое слово *</label>
+                            <input type="text" name="codeWord" class="form-input" required placeholder="promo">
+                        </div>
+                        <div class="form-group form-group-flex">
+                            <label class="form-label">Сообщение в Telegram</label>
+                            <textarea name="telegramMessage" class="form-textarea" placeholder="Инструкция для пользователя"></textarea>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" name="enabled" id="word-enabled" class="form-checkbox" checked>
+                            <label for="word-enabled" class="checkbox-label">Активен</label>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Добавить</button>
+                    </div>
+                </form>
+            </div>
+            <h2 class="content-subtitle">Посты Instagram</h2>
             <div id="posts-container" class="posts-grid loading">Загрузка...</div>
         </section>
     </main>

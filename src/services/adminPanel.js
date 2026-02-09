@@ -86,13 +86,11 @@ class AdminPanel {
       res.sendFile('index.html', { root: 'public/admin' });
     });
 
-    // API: Получить все посты
+    // API: Получить все посты (при недоступности Instagram — пустой массив)
     this.app.get('/api/posts', async (req, res) => {
       try {
         const posts = await this.instagramService.getRecentPosts(50);
         const settings = this.postSettingsService.getAllSettings();
-
-        // Добавляем настройки к постам
         const postsWithSettings = posts.map(post => ({
           id: post.id,
           caption: post.caption || '',
@@ -101,11 +99,47 @@ class AdminPanel {
           mediaType: post.media_type || 'IMAGE',
           settings: settings[post.id] || null,
         }));
-
         res.json(postsWithSettings);
       } catch (error) {
-        logger.error('Ошибка получения постов', error);
-        res.status(500).json({ error: 'Ошибка получения постов' });
+        logger.error('Ошибка получения постов (Instagram недоступен)', error);
+        res.json([]);
+      }
+    });
+
+    // API: Кодовые слова без Instagram (?start=слово)
+    this.app.get('/api/words', (req, res) => {
+      res.json(this.postSettingsService.getAllWordSettings());
+    });
+
+    this.app.post('/api/words', (req, res) => {
+      const { codeWord, telegramMessage, redirectUrl, enabled } = req.body || {};
+      const word = (codeWord || '').trim();
+      if (!word) {
+        return res.status(400).json({ error: 'Кодовое слово обязательно' });
+      }
+      let finalRedirectUrl = redirectUrl;
+      if (!finalRedirectUrl && this.telegramBotService?.getBotStartUrl) {
+        finalRedirectUrl = this.telegramBotService.getBotStartUrl(word);
+      }
+      const success = this.postSettingsService.setWordSettings(word, {
+        telegramMessage,
+        redirectUrl: finalRedirectUrl,
+        enabled: enabled !== false,
+      });
+      if (success) {
+        res.json({ success: true, message: 'Сохранено' });
+      } else {
+        res.status(500).json({ error: 'Ошибка сохранения' });
+      }
+    });
+
+    this.app.delete('/api/words/:id', (req, res) => {
+      const { id } = req.params;
+      const success = this.postSettingsService.deleteWordSettings(id);
+      if (success) {
+        res.json({ success: true, message: 'Удалено' });
+      } else {
+        res.status(404).json({ error: 'Не найдено' });
       }
     });
 

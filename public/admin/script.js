@@ -36,13 +36,99 @@ async function loadPosts() {
             return;
         }
         const posts = await res.json();
-        renderPosts(posts);
+        renderPosts(Array.isArray(posts) ? posts : []);
     } catch (e) {
         const c = document.getElementById('posts-container');
         if (c) {
-            c.classList.add('loading');
-            c.innerHTML = '<p class="empty-state">Ошибка: ' + escapeHtml(e.message) + '</p>';
+            c.classList.remove('loading');
+            c.innerHTML = '<p class="empty-state">Ошибка загрузки постов.</p>';
         }
+    }
+}
+
+async function loadWords() {
+    const container = document.getElementById('words-container');
+    if (!container) return;
+    try {
+        const res = await fetch('/api/words', { credentials: 'include' });
+        if (res.status === 401) {
+            window.location.href = '/login';
+            return;
+        }
+        const words = await res.json();
+        container.classList.remove('loading');
+        if (!words.length) {
+            container.innerHTML = '<p class="empty-state">Нет кодовых слов. Добавьте ниже.</p>';
+            return;
+        }
+        container.innerHTML = words.map(w => {
+            const status = w.enabled ? 'active' : 'inactive';
+            const link = telegramBotInfo?.available ? `${telegramBotInfo.botUrl}?start=${encodeURIComponent(w.codeWord)}` : '';
+            return `
+            <div class="word-card">
+                <div class="word-card-main">
+                    <span class="word-badge">${escapeHtml(w.codeWord)}</span>
+                    <span class="status ${status}">${w.enabled ? 'Вкл' : 'Выкл'}</span>
+                    ${link ? `<a href="${escapeHtml(link)}" target="_blank" class="word-link">Ссылка</a>` : ''}
+                </div>
+                <p class="word-msg">${escapeHtml((w.telegramMessage || '').slice(0, 80))}${(w.telegramMessage || '').length > 80 ? '…' : ''}</p>
+                <button type="button" class="btn btn-small btn-danger" onclick="deleteWord('${escapeHtml(w.id)}')">Удалить</button>
+            </div>`;
+        }).join('');
+    } catch (e) {
+        container.classList.remove('loading');
+        container.innerHTML = '<p class="empty-state">Ошибка загрузки.</p>';
+    }
+}
+
+async function saveWord(event) {
+    event.preventDefault();
+    const form = document.getElementById('word-form');
+    const codeWord = form.codeWord.value.trim();
+    if (!codeWord) return;
+    const data = {
+        codeWord,
+        telegramMessage: form.telegramMessage.value,
+        enabled: form.enabled.checked,
+    };
+    try {
+        const res = await fetch('/api/words', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+            credentials: 'include',
+        });
+        const result = await res.json();
+        if (result.success) {
+            toast('Сохранено');
+            form.codeWord.value = '';
+            form.telegramMessage.value = '';
+            form.enabled.checked = true;
+            loadWords();
+        } else {
+            toast(result.error || 'Ошибка', 'error');
+        }
+    } catch (e) {
+        toast('Ошибка: ' + e.message, 'error');
+    }
+}
+
+async function deleteWord(id) {
+    if (!confirm('Удалить кодовое слово?')) return;
+    try {
+        const res = await fetch(`/api/words/${encodeURIComponent(id)}`, {
+            method: 'DELETE',
+            credentials: 'include',
+        });
+        const result = await res.json();
+        if (result.success) {
+            toast('Удалено');
+            loadWords();
+        } else {
+            toast(result.error || 'Ошибка', 'error');
+        }
+    } catch (e) {
+        toast('Ошибка', 'error');
     }
 }
 
@@ -55,7 +141,7 @@ function renderPosts(posts) {
     const container = document.getElementById('posts-container');
     container.classList.remove('loading');
     if (!posts.length) {
-        container.innerHTML = '<p class="empty-state">Посты не найдены. Настройте Instagram Graph API.</p>';
+        container.innerHTML = '<p class="empty-state">Постов нет (Instagram не подключён или посты не найдены). Используйте блок выше для автоответов по ссылке ?start=слово.</p>';
         return;
     }
     container.innerHTML = posts.map(post => {
@@ -183,7 +269,11 @@ document.getElementById('logout-btn')?.addEventListener('click', async (e) => {
     window.location.href = '/login';
 });
 
+document.getElementById('word-form')?.addEventListener('submit', saveWord);
+
 loadTelegramInfo().then(() => {
+    loadWords();
     loadPosts();
+    setInterval(loadWords, 30000);
     setInterval(loadPosts, 30000);
 });
