@@ -53,13 +53,13 @@ function parseCookies(cookieHeader) {
 }
 
 class AdminPanel {
-  constructor(instagramService, telegramBotService) {
+  constructor(instagramService, telegramBotService, postSettingsService = null) {
     this.app = express();
     this.app.use(express.json({ limit: '100kb' }));
     this.app.use(express.urlencoded({ extended: true, limit: '100kb' }));
     this.instagramService = instagramService;
     this.telegramBotService = telegramBotService;
-    this.postSettingsService = new PostSettingsService();
+    this.postSettingsService = postSettingsService || new PostSettingsService();
     this.server = null;
     this.port = config.admin.port || 3002;
     this.password = config.admin.password || 'admin';

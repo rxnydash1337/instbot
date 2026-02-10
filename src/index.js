@@ -19,7 +19,7 @@ class InstaBot {
     this.directMonitor = new DirectMonitor(this.instagramService);
     this.telegramBot = new TelegramBotService(this.postSettingsService, paidAccessStore);
     this.webhookService = new WebhookService(this.postSettingsService, this.telegramBot);
-    this.adminPanel = new AdminPanel(this.instagramService, this.telegramBot);
+    this.adminPanel = new AdminPanel(this.instagramService, this.telegramBot, this.postSettingsService);
     this.landingAPI = new LandingAPI(paidAccessStore);
   }
 

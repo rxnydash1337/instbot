@@ -981,6 +981,13 @@ html { scroll-behavior: smooth; }
     position: relative;
     z-index: 1;
     max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+.block-section.cta-block .section-title.cta-block__title {
+    display: block;
+    text-align: center;
 }
 .cta-block__title {
     font-family: var(--font-heading);
@@ -1007,6 +1014,7 @@ html { scroll-behavior: smooth; }
     font-size: 1.1rem;
     background: white;
     color: var(--primary-dark);
+    display: inline-block;
 }
 .cta-block .cta-button--large:hover,
 .cta-block .cta-button.large:hover {
