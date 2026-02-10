@@ -449,6 +449,54 @@ input::placeholder, textarea::placeholder {
     background: rgba(244, 33, 46, 0.3);
 }
 
+.btn-secondary {
+    background: var(--bg-hover);
+    color: var(--text);
+}
+
+.btn-secondary:hover {
+    background: var(--border);
+}
+
+.form-row-media {
+    margin-top: 8px;
+}
+
+.buttons-block {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.buttons-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.button-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.button-row .form-input {
+    flex: 1;
+    min-width: 0;
+}
+
+.button-row .btn-remove-row {
+    flex-shrink: 0;
+    width: 36px;
+    padding: 8px;
+}
+
+.word-extras {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
 .checkbox-group {
     display: flex;
     align-items: center;

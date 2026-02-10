@@ -1,3 +1,4 @@
+var ADMIN_BASE = (typeof window !== 'undefined' && window.ADMIN_BASE) ? window.ADMIN_BASE : '';
 let telegramBotInfo = null;
 
 function toast(msg, type = 'success') {
@@ -10,9 +11,9 @@ function toast(msg, type = 'success') {
 
 async function loadTelegramInfo() {
     try {
-        const res = await fetch('/api/telegram/info', { credentials: 'include' });
+        const res = await fetch(ADMIN_BASE + '/api/telegram/info', { credentials: 'include' });
         if (res.status === 401) {
-            window.location.href = '/login';
+            window.location.href = ADMIN_BASE + '/login';
             return;
         }
         telegramBotInfo = await res.json();
@@ -30,9 +31,9 @@ async function loadTelegramInfo() {
 
 async function loadPosts() {
     try {
-        const res = await fetch('/api/posts', { credentials: 'include' });
+        const res = await fetch(ADMIN_BASE + '/api/posts', { credentials: 'include' });
         if (res.status === 401) {
-            window.location.href = '/login';
+            window.location.href = ADMIN_BASE + '/login';
             return;
         }
         const posts = await res.json();
@@ -50,9 +51,9 @@ async function loadWords() {
     const container = document.getElementById('words-container');
     if (!container) return;
     try {
-        const res = await fetch('/api/words', { credentials: 'include' });
+        const res = await fetch(ADMIN_BASE + '/api/words', { credentials: 'include' });
         if (res.status === 401) {
-            window.location.href = '/login';
+            window.location.href = ADMIN_BASE + '/login';
             return;
         }
         const words = await res.json();
@@ -64,10 +65,16 @@ async function loadWords() {
         container.innerHTML = words.map(w => {
             const status = w.enabled ? 'active' : 'inactive';
             const link = telegramBotInfo?.available ? `${telegramBotInfo.botUrl}?start=${encodeURIComponent(w.codeWord)}` : '';
+            const hasMedia = w.telegramMedia && w.telegramMedia.url;
+            const hasButtons = Array.isArray(w.telegramButtons) && w.telegramButtons.length > 0;
+            const extras = [];
+            if (hasMedia) extras.push('📷');
+            if (hasButtons) extras.push('🔘');
             return `
             <div class="word-card">
                 <div class="word-card-main">
                     <span class="word-badge">${escapeHtml(w.codeWord)}</span>
+                    ${extras.length ? '<span class="word-extras">' + extras.join(' ') + '</span>' : ''}
                     <span class="status ${status}">${w.enabled ? 'Вкл' : 'Выкл'}</span>
                     ${link ? `<a href="${escapeHtml(link)}" target="_blank" class="word-link">Ссылка</a>` : ''}
                 </div>
@@ -81,18 +88,51 @@ async function loadWords() {
     }
 }
 
+function collectWordButtons() {
+    const list = document.getElementById('word-buttons-list');
+    if (!list) return [];
+    const rows = list.querySelectorAll('.button-row');
+    const out = [];
+    rows.forEach(row => {
+        const text = (row.querySelector('.btn-text') || {}).value;
+        const url = (row.querySelector('.btn-url') || {}).value;
+        if (text && url) out.push({ text: text.trim(), url: url.trim() });
+    });
+    return out;
+}
+
+function addWordButtonRow(text, url) {
+    const list = document.getElementById('word-buttons-list');
+    if (!list) return;
+    const row = document.createElement('div');
+    row.className = 'button-row';
+    row.innerHTML = `
+        <input type="text" class="form-input btn-text" placeholder="Текст кнопки" value="${escapeHtml(text || '')}">
+        <input type="url" class="form-input btn-url" placeholder="https://..." value="${escapeHtml(url || '')}">
+        <button type="button" class="btn btn-small btn-danger btn-remove-row">×</button>
+    `;
+    row.querySelector('.btn-remove-row').addEventListener('click', () => row.remove());
+    list.appendChild(row);
+}
+
 async function saveWord(event) {
     event.preventDefault();
     const form = document.getElementById('word-form');
     const codeWord = form.codeWord.value.trim();
     if (!codeWord) return;
+    const mediaType = (form.telegramMediaType && form.telegramMediaType.value) || '';
+    const mediaUrl = (form.telegramMediaUrl && form.telegramMediaUrl.value && form.telegramMediaUrl.value.trim()) || '';
+    const telegramMedia = mediaType && mediaUrl ? { type: mediaType, url: mediaUrl } : null;
+    const telegramButtons = collectWordButtons();
     const data = {
         codeWord,
         telegramMessage: form.telegramMessage.value,
         enabled: form.enabled.checked,
+        telegramMedia,
+        telegramButtons,
     };
     try {
-        const res = await fetch('/api/words', {
+        const res = await fetch(ADMIN_BASE + '/api/words', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
@@ -104,6 +144,9 @@ async function saveWord(event) {
             form.codeWord.value = '';
             form.telegramMessage.value = '';
             form.enabled.checked = true;
+            if (form.telegramMediaType) form.telegramMediaType.value = '';
+            if (form.telegramMediaUrl) form.telegramMediaUrl.value = '';
+            document.getElementById('word-buttons-list').innerHTML = '';
             loadWords();
         } else {
             toast(result.error || 'Ошибка', 'error');
@@ -116,7 +159,7 @@ async function saveWord(event) {
 async function deleteWord(id) {
     if (!confirm('Удалить кодовое слово?')) return;
     try {
-        const res = await fetch(`/api/words/${encodeURIComponent(id)}`, {
+        const res = await fetch(ADMIN_BASE + `/api/words/${encodeURIComponent(id)}`, {
             method: 'DELETE',
             credentials: 'include',
         });
@@ -188,6 +231,31 @@ function renderPosts(posts) {
                                 <input type="url" name="redirectUrl" class="form-input" value="${escapeHtml(post.settings?.redirectUrl || '')}" placeholder="t.me/бот?start=код">
                             </div>
                         </div>
+                        <div class="form-row form-row-media">
+                            <div class="form-group">
+                                <label class="form-label">Медиа</label>
+                                <select name="telegramMediaType" class="form-input">
+                                    <option value="">Нет</option>
+                                    <option value="photo" ${(post.settings?.telegramMedia?.type || '') === 'photo' ? 'selected' : ''}>Фото</option>
+                                    <option value="video" ${(post.settings?.telegramMedia?.type || '') === 'video' ? 'selected' : ''}>Видео</option>
+                                    <option value="document" ${(post.settings?.telegramMedia?.type || '') === 'document' ? 'selected' : ''}>Документ</option>
+                                </select>
+                            </div>
+                            <div class="form-group form-group-flex">
+                                <label class="form-label">URL медиа</label>
+                                <input type="url" name="telegramMediaUrl" class="form-input" value="${escapeHtml(post.settings?.telegramMedia?.url || '')}" placeholder="https://...">
+                            </div>
+                        </div>
+                        <div class="buttons-block">
+                            <label class="form-label">Кнопки под сообщением</label>
+                            <div class="buttons-list post-buttons-list" id="buttons-list-${post.id}">${(Array.isArray(post.settings?.telegramButtons) ? post.settings.telegramButtons : []).map(b => `
+                                <div class="button-row">
+                                    <input type="text" class="form-input btn-text" placeholder="Текст кнопки" value="${escapeHtml(b.text || '')}">
+                                    <input type="url" class="form-input btn-url" placeholder="https://..." value="${escapeHtml(b.url || '')}">
+                                    <button type="button" class="btn btn-small btn-danger btn-remove-row">×</button>
+                                </div>`).join('')}</div>
+                            <button type="button" class="btn btn-small btn-secondary" onclick="addPostButtonRow('${post.id}')">+ Добавить кнопку</button>
+                        </div>
                     </div>
                     <div class="form-group checkbox-group">
                         <input type="checkbox" name="enabled" id="enabled-${post.id}" class="form-checkbox" ${post.settings?.enabled !== false ? 'checked' : ''}>
@@ -209,6 +277,33 @@ function escapeHtml(s) {
     return d.innerHTML;
 }
 
+function addPostButtonRow(postId) {
+    const list = document.getElementById('buttons-list-' + postId);
+    if (!list) return;
+    const row = document.createElement('div');
+    row.className = 'button-row';
+    row.innerHTML = `
+        <input type="text" class="form-input btn-text" placeholder="Текст кнопки">
+        <input type="url" class="form-input btn-url" placeholder="https://...">
+        <button type="button" class="btn btn-small btn-danger btn-remove-row">×</button>
+    `;
+    row.querySelector('.btn-remove-row').addEventListener('click', () => row.remove());
+    list.appendChild(row);
+}
+
+function collectFormButtons(form) {
+    const list = form.querySelector('.buttons-list');
+    if (!list) return [];
+    const rows = list.querySelectorAll('.button-row');
+    const out = [];
+    rows.forEach(row => {
+        const text = (row.querySelector('.btn-text') || {}).value;
+        const url = (row.querySelector('.btn-url') || {}).value;
+        if (text && url) out.push({ text: text.trim(), url: url.trim() });
+    });
+    return out;
+}
+
 async function saveSettings(event, postId) {
     event.preventDefault();
     const form = event.target;
@@ -217,6 +312,10 @@ async function saveSettings(event, postId) {
     if (!redirectUrl && telegramBotInfo?.available) {
         redirectUrl = `${telegramBotInfo.botUrl}?start=${encodeURIComponent(codeWord)}`;
     }
+    const mediaType = (form.telegramMediaType && form.telegramMediaType.value) || '';
+    const mediaUrl = (form.telegramMediaUrl && form.telegramMediaUrl.value && form.telegramMediaUrl.value.trim()) || '';
+    const telegramMedia = mediaType && mediaUrl ? { type: mediaType, url: mediaUrl } : null;
+    const telegramButtons = collectFormButtons(form);
     const data = {
         codeWord,
         commentReply: form.commentReply.value,
@@ -224,9 +323,11 @@ async function saveSettings(event, postId) {
         redirectUrl,
         telegramMessage: form.telegramMessage.value,
         enabled: form.enabled.checked,
+        telegramMedia,
+        telegramButtons,
     };
     try {
-        const res = await fetch(`/api/posts/${postId}/settings`, {
+        const res = await fetch(ADMIN_BASE + `/api/posts/${postId}/settings`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
@@ -247,7 +348,7 @@ async function saveSettings(event, postId) {
 async function deleteSettings(postId) {
     if (!confirm('Удалить настройки?')) return;
     try {
-        const res = await fetch(`/api/posts/${postId}/settings`, {
+        const res = await fetch(ADMIN_BASE + `/api/posts/${postId}/settings`, {
             method: 'DELETE',
             credentials: 'include',
         });
@@ -265,11 +366,18 @@ async function deleteSettings(postId) {
 
 document.getElementById('logout-btn')?.addEventListener('click', async (e) => {
     e.preventDefault();
-    await fetch('/api/logout', { method: 'POST', credentials: 'include' });
-    window.location.href = '/login';
+    await fetch(ADMIN_BASE + '/api/logout', { method: 'POST', credentials: 'include' });
+    window.location.href = ADMIN_BASE + '/login';
 });
 
 document.getElementById('word-form')?.addEventListener('submit', saveWord);
+document.getElementById('word-add-button')?.addEventListener('click', () => addWordButtonRow());
+document.getElementById('posts-container')?.addEventListener('click', (e) => {
+    if (e.target && e.target.classList.contains('btn-remove-row')) {
+        const row = e.target.closest('.button-row');
+        if (row) row.remove();
+    }
+});
 
 loadTelegramInfo().then(() => {
     loadWords();

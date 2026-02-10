@@ -7,20 +7,31 @@
     <link rel="stylesheet" href="/landing/style.css">
 </head>
 <body>
-    <header class="header">
+    <header class="header" id="hero">
         <div class="container">
             <div class="header-content">
+                <p class="hero-tagline">система обнуления стресса и восстановления устойчивости</p>
                 <h1 class="main-title">БАЗОВЫЙ КОД СПОКОЙСТВИЯ</h1>
-                <p class="subtitle">Система обнуления хронического стресса и восстановления устойчивости за 21 день</p>
-                <p class="header-audience">Для людей под высокой нагрузкой: предпринимателей, руководителей, врачей, инвесторов и всех, кто работает головой и несёт ответственность.</p>
-                <button class="cta-button" id="join-button" data-endpoint="/api/landing/join">
-                    Присоединиться к курсу
-                </button>
+                <p class="subtitle">Экспертная система за 21 день для тех, кто работает головой и несёт ответственность</p>
+                <p class="header-audience">Для предпринимателей, руководителей, врачей, инвесторов.</p>
+                <div class="hero-buttons">
+                    <button class="cta-button" id="join-button" data-endpoint="/api/landing/join">Присоединиться к курсу</button>
+                    <a href="#" class="cta-outline">Перейти в Telegram</a>
+                </div>
             </div>
         </div>
     </header>
 
-    <section class="block-section">
+    <section class="stats-strip">
+        <div class="container stats-inner">
+            <div class="stat-item"><span class="stat-number">21</span><span class="stat-label">день курса</span></div>
+            <div class="stat-item"><span class="stat-number">7</span><span class="stat-label">видео-модулей</span></div>
+            <div class="stat-item"><span class="stat-number">10–20</span><span class="stat-label">мин в день</span></div>
+            <div class="stat-item"><span class="stat-number">50+</span><span class="stat-label">лайфхаков в бонусе</span></div>
+        </div>
+    </section>
+
+    <section class="block-section" data-reveal>
         <div class="container">
             <h2 class="section-title">Если это про вас — вы по адресу</h2>
             <p class="block-lead">Вы можете быть внешне собранным, успешным, рациональным, привыкшим держать удар. Но внутри при этом:</p>
@@ -37,14 +48,14 @@
         </div>
     </section>
 
-    <section class="block-section alt">
+    <section class="block-section alt" data-reveal>
         <div class="container">
             <h2 class="section-title">Почему проблема не в вас</h2>
             <p>Вас не «сломал характер». Вы не «слишком чувствительный». Вы не «плохо справляетесь». Вы просто слишком долго жили в режиме стресса, который перестал ощущаться как стресс и стал фоном жизни.</p>
         </div>
     </section>
 
-    <section class="block-section">
+    <section class="block-section" data-reveal>
         <div class="container">
             <h2 class="section-title">Что такое стресс на самом деле</h2>
             <p>Стресс — это не эмоции. Стресс — это режим работы организма. Любая угроза гомеостазу — психологическая, физическая, биохимическая, социальная — включает одну и ту же систему: нервная система, гормоны, энергообмен.</p>
@@ -52,7 +63,7 @@
         </div>
     </section>
 
-    <section class="block-section alt">
+    <section class="block-section alt" data-reveal>
         <div class="container">
             <h2 class="section-title">Почему «отдохнуть» и «успокоиться» не работают</h2>
             <p>Вы могли пробовать: отпуск, отдых, медитации, дыхание, спорт, психологию, позитивное мышление. И что-то, возможно, помогало. Но ненадолго.</p>
@@ -60,7 +71,7 @@
         </div>
     </section>
 
-    <section class="block-section">
+    <section class="block-section" data-reveal>
         <div class="container">
             <h2 class="section-title">Что такое «Базовый код спокойствия»</h2>
             <p>Базовый код спокойствия — это не мотивация и не терапия. Это инженерная система, которая:</p>
@@ -75,7 +86,7 @@
         </div>
     </section>
 
-    <section class="block-section alt">
+    <section class="block-section alt" id="for-whom" data-reveal>
         <div class="container">
             <h2 class="section-title">Кому особенно подойдёт этот курс</h2>
             <p>Этот курс создан для людей, которые: принимают решения, отвечают за деньги, людей, результаты, работают интеллектуально, привыкли быть сильными, устали жить в постоянной мобилизации.</p>
@@ -90,7 +101,7 @@
         </div>
     </section>
 
-    <section class="block-section">
+    <section class="block-section" data-reveal>
         <div class="container">
             <h2 class="section-title">Что вы получите за 21 день</h2>
             <p class="block-lead">Не «новую версию себя». А возврат к нормальному состоянию системы.</p>
@@ -107,7 +118,7 @@
         </div>
     </section>
 
-    <section class="block-section alt">
+    <section class="block-section alt" data-reveal>
         <div class="container">
             <h2 class="section-title">Почему именно 21 день</h2>
             <p>21 день — это не магия. Это оптимальный цикл, чтобы: удержать фокус без перегруза, восстановить базовые опоры, увидеть измеримые изменения, вывести систему из режима выживания.</p>
@@ -115,7 +126,7 @@
         </div>
     </section>
 
-    <section class="block-section">
+    <section class="block-section" id="program" data-reveal>
         <div class="container">
             <h2 class="section-title">Как устроен курс</h2>
             <h3 class="sub-section-title">Формат</h3>
@@ -141,7 +152,7 @@
         </div>
     </section>
 
-    <section class="block-section alt">
+    <section class="block-section alt" id="author" data-reveal>
         <div class="container">
             <h2 class="section-title">Кто автор курса</h2>
             <p class="author-name">Екатерина Мак</p>
@@ -157,7 +168,7 @@
         </div>
     </section>
 
-    <section class="block-section">
+    <section class="block-section" data-reveal>
         <div class="container">
             <h2 class="section-title">Почему этому можно доверять</h2>
             <ul class="list-block">
@@ -171,7 +182,7 @@
         </div>
     </section>
 
-    <section class="block-section alt">
+    <section class="block-section alt" data-reveal>
         <div class="container">
             <h2 class="section-title">Кому курс не подойдёт</h2>
             <ul class="list-block">
@@ -183,14 +194,14 @@
         </div>
     </section>
 
-    <section class="block-section">
+    <section class="block-section" data-reveal>
         <div class="container">
             <h2 class="section-title">Форматы участия и тарифы</h2>
             <p class="block-note">(блок тарифов вставляется здесь)</p>
         </div>
     </section>
 
-    <section class="block-section cta-block">
+    <section class="block-section cta-block" data-reveal>
         <div class="container">
             <h2 class="section-title">Финальный вопрос</h2>
             <p class="block-lead">Если вы продолжите жить в режиме постоянной мобилизации — что это будет стоить вам через год? Здоровья? Отношений? Ясности?</p>

@@ -30,5 +30,22 @@ function setupJoinButtons() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', setupJoinButtons);
+function setupScrollReveal() {
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        },
+        { rootMargin: '0px 0px -60px 0px', threshold: 0.1 }
+    );
+    document.querySelectorAll('[data-reveal]').forEach((el) => observer.observe(el));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    setupJoinButtons();
+    setupScrollReveal();
+});
 

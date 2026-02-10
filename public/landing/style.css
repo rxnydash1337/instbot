@@ -32,12 +32,65 @@ body {
     padding: 0 24px;
 }
 
+html { scroll-behavior: smooth; }
+
 /* Header */
 .header {
     background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: white;
     padding: 80px 0;
     text-align: center;
+}
+.hero-tagline {
+    font-size: 0.95rem;
+    text-transform: lowercase;
+    opacity: 0.95;
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+}
+.hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 28px;
+}
+.cta-outline {
+    display: inline-block;
+    padding: 14px 28px;
+    border: 2px solid rgba(255,255,255,0.9);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background 0.2s, color 0.2s;
+}
+.cta-outline:hover {
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+.stats-strip {
+    background: var(--bg-alt);
+    padding: 40px 0;
+    border-bottom: 1px solid var(--border);
+}
+.stats-inner {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    text-align: center;
+}
+.stats-strip .stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 4px;
+}
+.stats-strip .stat-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
 }
 
 .header-content {
@@ -93,6 +146,17 @@ body {
     margin-top: 12px;
     font-size: 0.9rem;
     opacity: 0.9;
+}
+
+/* Scroll reveal */
+[data-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+[data-reveal].revealed {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* Block sections (from doc) */
@@ -345,6 +409,9 @@ body {
 
 @media (max-width: 768px) {
     .header { padding: 60px 0; }
+    .hero-buttons { flex-direction: column; align-items: center; }
+    .stats-inner { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .stats-strip .stat-number { font-size: 1.6rem; }
     .gift-section, .reviews-section, .included-section,
     .for-whom-section, .stats-section, .final-cta-section {
         padding: 48px 0;

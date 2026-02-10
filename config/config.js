@@ -37,10 +37,12 @@ export const config = {
     chatId: process.env.TELEGRAM_CHAT_ID || '',
   },
 
-  // Админ панель
+  // Админ панель (доступ только по секретному пути, не /admin)
   admin: {
     port: parseInt(process.env.ADMIN_PORT) || 3002,
     password: process.env.ADMIN_PASSWORD || 'admin',
+    // Секретный путь: только по нему отдаётся админка. Пример: x7k2m9p → bazkod.ru/x7k2m9p
+    path: (process.env.ADMIN_PATH || 'x7k2m9p').replace(/^\/+|\/+$/g, ''),
   },
 
   // Настройки мониторинга

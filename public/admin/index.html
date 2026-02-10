@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Админ панель</title>
-    <link rel="stylesheet" href="/admin/style.css">
+    <link rel="stylesheet" href="admin/style.css">
 </head>
 <body>
     <aside class="sidebar">
@@ -44,6 +44,26 @@
                             <label for="word-enabled" class="checkbox-label">Активен</label>
                         </div>
                     </div>
+                    <div class="form-row form-row-media">
+                        <div class="form-group">
+                            <label class="form-label">Медиа</label>
+                            <select name="telegramMediaType" class="form-input">
+                                <option value="">Нет</option>
+                                <option value="photo">Фото</option>
+                                <option value="video">Видео</option>
+                                <option value="document">Документ</option>
+                            </select>
+                        </div>
+                        <div class="form-group form-group-flex">
+                            <label class="form-label">URL медиа</label>
+                            <input type="url" name="telegramMediaUrl" class="form-input" placeholder="https://...">
+                        </div>
+                    </div>
+                    <div class="buttons-block">
+                        <label class="form-label">Кнопки под сообщением (инлайн)</label>
+                        <div id="word-buttons-list" class="buttons-list"></div>
+                        <button type="button" id="word-add-button" class="btn btn-small btn-secondary">+ Добавить кнопку</button>
+                    </div>
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">Добавить</button>
                     </div>
@@ -54,6 +74,7 @@
         </section>
     </main>
     <div id="toast" class="toast"></div>
-    <script src="/admin/script.js"></script>
+    <script>window.ADMIN_BASE = (function(){ var p = location.pathname.split('/').filter(Boolean); return p.length ? '/' + p[0] : ''; })();</script>
+    <script src="admin/script.js"></script>
 </body>
 </html>

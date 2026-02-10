@@ -1,4 +1,4 @@
-/** Админ панель для управления настройками постов */
+/** Админ панель — доступ только по секретному пути (ADMIN_PATH), не по /admin */
 import crypto from 'crypto';
 import express from 'express';
 import InstagramService from './instagramService.js';
@@ -32,11 +32,13 @@ class AdminPanel {
     this.server = null;
     this.port = config.admin.port || 3002;
     this.password = config.admin.password || 'admin';
+    this.adminPath = (config.admin.path || 'x7k2m9p').replace(/^\/+|\/+$/g, '') || 'x7k2m9p';
+    this.basePath = '/' + this.adminPath;
     this.sessions = new Set();
   }
 
   checkAuth(req, res, next) {
-    const publicPaths = ['/login', '/admin/login.html', '/admin/style.css'];
+    const publicPaths = ['/login', '/admin/login.html', '/admin/style.css', '/admin/script.js'];
     if (publicPaths.includes(req.path) || req.path === '/api/login') {
       return next();
     }
@@ -48,46 +50,58 @@ class AdminPanel {
     if (req.path.startsWith('/api/')) {
       return res.status(401).json({ error: 'Требуется авторизация' });
     }
-    return res.redirect('/login');
+    return res.redirect(this.basePath + '/login');
   }
 
   setupRoutes() {
-    this.app.use(this.checkAuth.bind(this));
+    // Любой запрос не под секретным путём — 404 (на bazkod.ru не светим админку)
+    this.app.use((req, res, next) => {
+      const path = (req.path || '').replace(/^\/+/, '').replace(/\/+$/, '');
+      const isUnderSecret = path === this.adminPath || path.startsWith(this.adminPath + '/');
+      if (!isUnderSecret) {
+        return res.status(404).end();
+      }
+      next();
+    });
 
-    this.app.use('/admin', express.static('public/admin'));
-    this.app.use(express.static('public'));
+    const router = express.Router({ mergeParams: true });
 
-    this.app.get('/login', (req, res) => {
+    router.use(this.checkAuth.bind(this));
+
+    router.use('/admin', express.static('public/admin'));
+    router.use(express.static('public'));
+
+    router.get('/login', (req, res) => {
       res.sendFile('login.html', { root: 'public/admin' });
     });
 
-    this.app.post('/api/login', (req, res) => {
+    router.post('/api/login', (req, res) => {
       const { username, password } = req.body || {};
       const p = (process.env.ADMIN_PASSWORD || '').trim();
       const adminPassword = p || config.admin.password || 'admin';
       if (username === 'admin' && password && password === adminPassword) {
         const token = crypto.randomBytes(32).toString('hex');
         this.sessions.add(token);
-        res.setHeader('Set-Cookie', `${SESSION_COOKIE}=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${SESSION_MAX_AGE / 1000}`);
+        res.setHeader('Set-Cookie', `${SESSION_COOKIE}=${token}; Path=${this.basePath}; HttpOnly; SameSite=Lax; Max-Age=${SESSION_MAX_AGE / 1000}`);
         return res.json({ success: true });
       }
       res.status(401).json({ success: false, error: 'Неверный логин или пароль' });
     });
 
-    this.app.post('/api/logout', (req, res) => {
+    router.post('/api/logout', (req, res) => {
       const cookies = parseCookies(req.headers.cookie);
       const token = cookies[SESSION_COOKIE];
       if (token) this.sessions.delete(token);
-      res.setHeader('Set-Cookie', `${SESSION_COOKIE}=; Path=/; HttpOnly; Max-Age=0`);
+      res.setHeader('Set-Cookie', `${SESSION_COOKIE}=; Path=${this.basePath}; HttpOnly; Max-Age=0`);
       res.json({ success: true });
     });
 
-    this.app.get('/', (req, res) => {
+    router.get('/', (req, res) => {
       res.sendFile('index.html', { root: 'public/admin' });
     });
 
     // API: Получить все посты (при недоступности Instagram — пустой массив)
-    this.app.get('/api/posts', async (req, res) => {
+    router.get('/api/posts', async (req, res) => {
       try {
         const posts = await this.instagramService.getRecentPosts(50);
         const settings = this.postSettingsService.getAllSettings();
@@ -107,12 +121,12 @@ class AdminPanel {
     });
 
     // API: Кодовые слова без Instagram (?start=слово)
-    this.app.get('/api/words', (req, res) => {
+    router.get('/api/words', (req, res) => {
       res.json(this.postSettingsService.getAllWordSettings());
     });
 
-    this.app.post('/api/words', (req, res) => {
-      const { codeWord, telegramMessage, redirectUrl, enabled } = req.body || {};
+    router.post('/api/words', (req, res) => {
+      const { codeWord, telegramMessage, redirectUrl, enabled, telegramMedia, telegramButtons } = req.body || {};
       const word = (codeWord || '').trim();
       if (!word) {
         return res.status(400).json({ error: 'Кодовое слово обязательно' });
@@ -125,6 +139,8 @@ class AdminPanel {
         telegramMessage,
         redirectUrl: finalRedirectUrl,
         enabled: enabled !== false,
+        telegramMedia: telegramMedia && telegramMedia.url ? telegramMedia : null,
+        telegramButtons: Array.isArray(telegramButtons) ? telegramButtons : [],
       });
       if (success) {
         res.json({ success: true, message: 'Сохранено' });
@@ -133,7 +149,7 @@ class AdminPanel {
       }
     });
 
-    this.app.delete('/api/words/:id', (req, res) => {
+    router.delete('/api/words/:id', (req, res) => {
       const { id } = req.params;
       const success = this.postSettingsService.deleteWordSettings(id);
       if (success) {
@@ -144,22 +160,21 @@ class AdminPanel {
     });
 
     // API: Получить настройки поста
-    this.app.get('/api/posts/:postId/settings', (req, res) => {
+    router.get('/api/posts/:postId/settings', (req, res) => {
       const { postId } = req.params;
       const settings = this.postSettingsService.getPostSettings(postId);
       res.json(settings || {});
     });
 
     // API: Сохранить настройки поста
-    this.app.post('/api/posts/:postId/settings', (req, res) => {
+    router.post('/api/posts/:postId/settings', (req, res) => {
       const { postId } = req.params;
-      const { codeWord, commentReply, directReply, redirectUrl, telegramMessage, enabled } = req.body;
+      const { codeWord, commentReply, directReply, redirectUrl, telegramMessage, enabled, telegramMedia, telegramButtons } = req.body;
 
       if (!codeWord) {
         return res.status(400).json({ error: 'Кодовое слово обязательно' });
       }
 
-      // Если не указан redirectUrl, формируем из Telegram бота
       let finalRedirectUrl = redirectUrl;
       if (!finalRedirectUrl && this.telegramBotService && this.telegramBotService.getBotStartUrl) {
         finalRedirectUrl = this.telegramBotService.getBotStartUrl(codeWord);
@@ -171,6 +186,8 @@ class AdminPanel {
         redirectUrl: finalRedirectUrl,
         telegramMessage,
         enabled,
+        telegramMedia: telegramMedia && telegramMedia.url ? telegramMedia : null,
+        telegramButtons: Array.isArray(telegramButtons) ? telegramButtons : [],
       });
 
       if (success) {
@@ -181,7 +198,7 @@ class AdminPanel {
     });
 
     // API: Получить информацию о Telegram боте
-    this.app.get('/api/telegram/info', (req, res) => {
+    router.get('/api/telegram/info', (req, res) => {
       if (!this.telegramBotService || !this.telegramBotService.getBotUrl) {
         return res.json({ available: false });
       }
@@ -197,7 +214,7 @@ class AdminPanel {
     });
 
     // API: Удалить настройки поста
-    this.app.delete('/api/posts/:postId/settings', (req, res) => {
+    router.delete('/api/posts/:postId/settings', (req, res) => {
       const { postId } = req.params;
       const success = this.postSettingsService.deletePostSettings(postId);
       if (success) {
@@ -206,6 +223,8 @@ class AdminPanel {
         res.status(404).json({ error: 'Настройки не найдены' });
       }
     });
+
+    this.app.use(this.basePath, router);
   }
 
   start() {
@@ -213,7 +232,8 @@ class AdminPanel {
     
     this.server = this.app.listen(this.port, () => {
       const pwdSet = !!(process.env.ADMIN_PASSWORD || '').trim();
-      logger.info(`Админ панель: ${config.publicUrl}`);
+      const adminUrl = `${config.publicUrl}${this.basePath}`;
+      logger.info(`Админ панель только по секретному пути: ${adminUrl}`);
       if (!pwdSet) logger.warn('ADMIN_PASSWORD не задан — используется admin');
     });
   }
