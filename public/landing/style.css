@@ -229,6 +229,17 @@ html { scroll-behavior: smooth; }
     color: var(--primary);
     margin: 2rem 0 1rem;
 }
+.sub-section-title:first-of-type {
+    margin-top: 0;
+}
+#program .list-block,
+#program .program-list,
+#program .sub-section-title + p,
+#program .block-note {
+    margin-left: 1rem;
+}
+#program .list-block { max-width: 520px; }
+#program .program-list { max-width: 600px; }
 
 .program-list {
     margin: 1rem auto 1.5rem;
@@ -410,14 +421,25 @@ html { scroll-behavior: smooth; }
 /* Footer */
 .footer {
     padding: 40px 0;
-    background: var(--text);
-    color: white;
+    background: #282b30;
+    color: rgba(255,255,255,0.9);
     text-align: center;
 }
 
 .footer-text {
-    opacity: 0.85;
     font-size: 0.95rem;
+    margin-bottom: 16px;
+}
+
+.footer-legal {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    color: rgba(255,255,255,0.9);
+}
+.footer-legal span + span::before {
+    content: " | ";
+    margin: 0 0.25em;
+    opacity: 0.7;
 }
 
 @media (max-width: 768px) {
