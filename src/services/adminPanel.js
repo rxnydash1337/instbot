@@ -1,10 +1,30 @@
 /** Админ панель — доступ только по секретному пути (ADMIN_PATH), не по /admin */
 import crypto from 'crypto';
 import express from 'express';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import multer from 'multer';
 import InstagramService from './instagramService.js';
 import PostSettingsService from './postSettingsService.js';
 import { config } from '../../config/config.js';
 import { logger } from '../utils/logger.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const projectRoot = path.resolve(__dirname, '../..');
+const uploadsDir = path.join(projectRoot, 'public', 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, uploadsDir),
+  filename: (_req, file, cb) => {
+    const ext = path.extname(file.originalname) || '';
+    cb(null, `${Date.now()}-${crypto.randomBytes(6).toString('hex')}${ext}`);
+  },
+});
+const upload = multer({ storage, limits: { fileSize: 20 * 1024 * 1024 } });
 
 const SESSION_COOKIE = 'admin_session';
 const SESSION_MAX_AGE = 7 * 24 * 60 * 60 * 1000;
@@ -98,6 +118,14 @@ class AdminPanel {
 
     router.get('/', (req, res) => {
       res.sendFile('index.html', { root: 'public/admin' });
+    });
+
+    router.post('/api/upload', upload.single('file'), (req, res) => {
+      if (!req.file) {
+        return res.status(400).json({ error: 'Файл не выбран' });
+      }
+      const url = `${config.publicUrl.replace(/\/$/, '')}/uploads/${req.file.filename}`;
+      res.json({ url });
     });
 
     // API: Получить все посты (при недоступности Instagram — пустой массив)

@@ -145,7 +145,12 @@ async function saveWord(event) {
             form.telegramMessage.value = '';
             form.enabled.checked = true;
             if (form.telegramMediaType) form.telegramMediaType.value = '';
-            if (form.telegramMediaUrl) form.telegramMediaUrl.value = '';
+            const urlInput = document.getElementById('word-media-url');
+            if (urlInput) urlInput.value = '';
+            const fileInput = document.getElementById('word-media-file');
+            if (fileInput) fileInput.value = '';
+            const mediaStatus = document.getElementById('word-media-status');
+            if (mediaStatus) mediaStatus.textContent = '';
             document.getElementById('word-buttons-list').innerHTML = '';
             loadWords();
         } else {
@@ -242,8 +247,10 @@ function renderPosts(posts) {
                                 </select>
                             </div>
                             <div class="form-group form-group-flex">
-                                <label class="form-label">URL медиа</label>
-                                <input type="url" name="telegramMediaUrl" class="form-input" value="${escapeHtml(post.settings?.telegramMedia?.url || '')}" placeholder="https://...">
+                                <label class="form-label">Загрузить файл</label>
+                                <input type="file" class="form-input media-file-input" accept="image/*,video/*,.pdf,.doc,.docx">
+                                <input type="hidden" name="telegramMediaUrl" value="${escapeHtml(post.settings?.telegramMedia?.url || '')}">
+                                <p class="form-hint media-file-status"></p>
                             </div>
                         </div>
                         <div class="buttons-block">
@@ -372,10 +379,69 @@ document.getElementById('logout-btn')?.addEventListener('click', async (e) => {
 
 document.getElementById('word-form')?.addEventListener('submit', saveWord);
 document.getElementById('word-add-button')?.addEventListener('click', () => addWordButtonRow());
+
+document.getElementById('word-media-file')?.addEventListener('change', async function() {
+    const file = this.files?.[0];
+    const urlInput = document.getElementById('word-media-url');
+    const status = document.getElementById('word-media-status');
+    urlInput.value = '';
+    status.textContent = '';
+    if (!file) return;
+    status.textContent = 'Загрузка...';
+    const fd = new FormData();
+    fd.append('file', file);
+    try {
+        const res = await fetch(ADMIN_BASE + '/api/upload', {
+            method: 'POST',
+            body: fd,
+            credentials: 'include',
+        });
+        const data = await res.json();
+        if (data.url) {
+            urlInput.value = data.url;
+            status.textContent = 'Загружено: ' + file.name;
+            status.style.color = '';
+        } else {
+            status.textContent = data.error || 'Ошибка загрузки';
+            status.style.color = 'var(--danger)';
+        }
+    } catch (e) {
+        status.textContent = 'Ошибка: ' + e.message;
+        status.style.color = 'var(--danger)';
+    }
+});
 document.getElementById('posts-container')?.addEventListener('click', (e) => {
     if (e.target && e.target.classList.contains('btn-remove-row')) {
         const row = e.target.closest('.button-row');
         if (row) row.remove();
+    }
+});
+
+document.getElementById('posts-container')?.addEventListener('change', async function(e) {
+    const input = e.target;
+    if (!input.classList.contains('media-file-input')) return;
+    const file = input.files?.[0];
+    const form = input.closest('form');
+    const urlInput = form?.querySelector('input[name="telegramMediaUrl"]');
+    const status = form?.querySelector('.media-file-status');
+    if (!urlInput || !form) return;
+    urlInput.value = '';
+    if (status) status.textContent = '';
+    if (!file) return;
+    if (status) status.textContent = 'Загрузка...';
+    const fd = new FormData();
+    fd.append('file', file);
+    try {
+        const res = await fetch(ADMIN_BASE + '/api/upload', { method: 'POST', body: fd, credentials: 'include' });
+        const data = await res.json();
+        if (data.url) {
+            urlInput.value = data.url;
+            if (status) { status.textContent = 'Загружено: ' + file.name; status.style.color = ''; }
+        } else {
+            if (status) { status.textContent = data.error || 'Ошибка'; status.style.color = 'var(--danger)'; }
+        }
+    } catch (err) {
+        if (status) { status.textContent = 'Ошибка: ' + err.message; status.style.color = 'var(--danger)'; }
     }
 });
 

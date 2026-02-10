@@ -4,4 +4,4 @@ logs/
 *.log
 .DS_Store
 data/
-
+public/uploads/
