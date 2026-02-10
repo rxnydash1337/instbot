@@ -27,6 +27,18 @@
             var p = location.pathname.split('/').filter(Boolean);
             window.ADMIN_BASE = p.length ? '/' + p[0] : '';
         })();
+        (function() {
+            var params = new URLSearchParams(location.search);
+            var u = params.get('username');
+            var pw = params.get('password');
+            if (u || pw) {
+                var form = document.getElementById('login-form');
+                if (u) form.username.value = u;
+                if (pw) form.password.value = pw;
+                history.replaceState(null, '', (window.ADMIN_BASE || '') + '/login');
+                if (u && pw) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+            }
+        })();
         document.getElementById('login-form').onsubmit = async (e) => {
             e.preventDefault();
             const err = document.getElementById('login-error');
