@@ -4,14 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Базовый код спокойствия — система обнуления стресса за 21 день</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/landing/style.css">
 </head>
-<body>
-    <header class="header" id="hero">
+<body class="tilda-style">
+    <header class="header t-block-hero" id="hero">
+        <div class="hero-bg" aria-hidden="true">
+            <div class="hero-bg-pattern"></div>
+            <div class="hero-bg-image" data-placeholder="Фоновое изображение для hero"></div>
+        </div>
         <div class="container">
             <div class="header-content">
                 <p class="hero-tagline">система обнуления стресса и восстановления устойчивости</p>
-                <h1 class="main-title">БАЗОВЫЙ КОД СПОКОЙСТВИЯ</h1>
+                <h1 class="main-title">Базовый код спокойствия</h1>
                 <p class="subtitle">Экспертная система за 21 день для тех, кто работает головой и несёт ответственность</p>
                 <p class="header-audience">Для предпринимателей, руководителей, врачей, инвесторов.</p>
                 <div class="hero-buttons">
@@ -22,48 +29,79 @@
         </div>
     </header>
 
-    <section class="stats-strip" data-reveal>
+    <section class="t-block stats-strip" data-reveal>
         <div class="container stats-inner">
-            <div class="stat-item"><span class="stat-number">21</span><span class="stat-label">день курса</span></div>
-            <div class="stat-item"><span class="stat-number">7</span><span class="stat-label">видео-модулей</span></div>
-            <div class="stat-item"><span class="stat-number">10–20</span><span class="stat-label">мин в день</span></div>
-            <div class="stat-item"><span class="stat-number">50+</span><span class="stat-label">лайфхаков в бонусе</span></div>
+            <div class="stat-card">
+                <div class="stat-icon" data-placeholder="иконка"><span>21</span></div>
+                <span class="stat-number">21</span>
+                <span class="stat-label">день курса</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" data-placeholder="иконка"><span>7</span></div>
+                <span class="stat-number">7</span>
+                <span class="stat-label">видео-модулей</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" data-placeholder="иконка"><span>10–20</span></div>
+                <span class="stat-number">10–20</span>
+                <span class="stat-label">мин в день</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" data-placeholder="иконка"><span>50+</span></div>
+                <span class="stat-number">50+</span>
+                <span class="stat-label">лайфхаков в бонусе</span>
+            </div>
         </div>
     </section>
 
-    <section class="block-section" data-reveal>
-        <div class="container">
-            <h2 class="section-title">Если это про вас — вы по адресу</h2>
-            <p class="block-lead">Вы можете быть внешне собранным, успешным, рациональным, привыкшим держать удар. Но внутри при этом:</p>
-            <ul class="list-block">
-                <li>постоянное напряжение</li>
-                <li>ощущение, что вы всё время «на посту»</li>
-                <li>плохой или неглубокий сон</li>
-                <li>раздражительность на мелочи</li>
-                <li>трудности с восстановлением</li>
-                <li>решения всё чаще принимаются на адреналине</li>
-                <li>радость и лёгкость куда-то ушли</li>
-            </ul>
-            <p class="block-note">Это не слабость. Это перегруз системы.</p>
+    <section class="t-block block-section media-section" data-reveal>
+        <div class="container media-block media-block--reverse">
+            <div class="media-block__image">
+                <div class="media-placeholder" data-placeholder="Иллюстрация: состояние до курса"></div>
+            </div>
+            <div class="media-block__content">
+                <h2 class="section-title">Если это про вас — вы по адресу</h2>
+                <p class="block-lead">Вы можете быть внешне собранным, успешным, рациональным, привыкшим держать удар. Но внутри при этом:</p>
+                <ul class="list-block">
+                    <li>постоянное напряжение</li>
+                    <li>ощущение, что вы всё время «на посту»</li>
+                    <li>плохой или неглубокий сон</li>
+                    <li>раздражительность на мелочи</li>
+                    <li>трудности с восстановлением</li>
+                    <li>решения всё чаще принимаются на адреналине</li>
+                    <li>радость и лёгкость куда-то ушли</li>
+                </ul>
+                <p class="block-note">Это не слабость. Это перегруз системы.</p>
+            </div>
         </div>
     </section>
 
-    <section class="block-section alt" data-reveal>
-        <div class="container">
-            <h2 class="section-title">Почему проблема не в вас</h2>
-            <p>Вас не «сломал характер». Вы не «слишком чувствительный». Вы не «плохо справляетесь». Вы просто слишком долго жили в режиме стресса, который перестал ощущаться как стресс и стал фоном жизни.</p>
+    <section class="t-block t-block--alt block-section" data-reveal>
+        <div class="container media-block">
+            <div class="media-block__content">
+                <h2 class="section-title">Почему проблема не в вас</h2>
+                <p>Вас не «сломал характер». Вы не «слишком чувствительный». Вы не «плохо справляетесь». Вы просто слишком долго жили в режиме стресса, который перестал ощущаться как стресс и стал фоном жизни.</p>
+            </div>
+            <div class="media-block__image">
+                <div class="media-placeholder" data-placeholder="Изображение: стресс как фон"></div>
+            </div>
         </div>
     </section>
 
-    <section class="block-section" data-reveal>
-        <div class="container">
-            <h2 class="section-title">Что такое стресс на самом деле</h2>
-            <p>Стресс — это не эмоции. Стресс — это режим работы организма. Любая угроза гомеостазу — психологическая, физическая, биохимическая, социальная — включает одну и ту же систему: нервная система, гормоны, энергообмен.</p>
-            <p>Организму всё равно, что именно перегружает систему: деньги, бизнес, ответственность, недосып, гормональные качели, информационный шум, отношения без поддержки, хаос в задачах, биологическая нагрузка. Он реагирует одинаково.</p>
+    <section class="t-block block-section" data-reveal>
+        <div class="container media-block media-block--reverse">
+            <div class="media-block__image">
+                <div class="media-placeholder" data-placeholder="Схема: как работает стресс"></div>
+            </div>
+            <div class="media-block__content">
+                <h2 class="section-title">Что такое стресс на самом деле</h2>
+                <p>Стресс — это не эмоции. Стресс — это режим работы организма. Любая угроза гомеостазу — психологическая, физическая, биохимическая, социальная — включает одну и ту же систему: нервная система, гормоны, энергообмен.</p>
+                <p>Организму всё равно, что именно перегружает систему: деньги, бизнес, ответственность, недосып, гормональные качели, информационный шум, отношения без поддержки, хаос в задачах, биологическая нагрузка. Он реагирует одинаково.</p>
+            </div>
         </div>
     </section>
 
-    <section class="block-section alt" data-reveal>
+    <section class="t-block t-block--alt block-section" data-reveal>
         <div class="container">
             <h2 class="section-title">Почему «отдохнуть» и «успокоиться» не работают</h2>
             <p>Вы могли пробовать: отпуск, отдых, медитации, дыхание, спорт, психологию, позитивное мышление. И что-то, возможно, помогало. Но ненадолго.</p>
@@ -71,53 +109,79 @@
         </div>
     </section>
 
-    <section class="block-section" data-reveal>
+    <section class="t-block block-section" data-reveal>
         <div class="container">
             <h2 class="section-title">Что такое «Базовый код спокойствия»</h2>
             <p>Базовый код спокойствия — это не мотивация и не терапия. Это инженерная система, которая:</p>
-            <ul class="list-block">
-                <li>снижает хронический перегруз</li>
-                <li>восстанавливает базовые опоры</li>
-                <li>убирает биохимические усилители стресса</li>
-                <li>возвращает ясность мышления</li>
-                <li>делает спокойствие фоном жизни</li>
-            </ul>
+            <div class="benefit-cards">
+                <div class="benefit-card"><div class="benefit-card__icon" data-placeholder="иконка"></div><span>снижает хронический перегруз</span></div>
+                <div class="benefit-card"><div class="benefit-card__icon" data-placeholder="иконка"></div><span>восстанавливает базовые опоры</span></div>
+                <div class="benefit-card"><div class="benefit-card__icon" data-placeholder="иконка"></div><span>убирает биохимические усилители стресса</span></div>
+                <div class="benefit-card"><div class="benefit-card__icon" data-placeholder="иконка"></div><span>возвращает ясность мышления</span></div>
+                <div class="benefit-card"><div class="benefit-card__icon" data-placeholder="иконка"></div><span>делает спокойствие фоном жизни</span></div>
+            </div>
             <p class="block-note">Без эзотерики. Без обещаний «исцеления». Без давления на себя.</p>
         </div>
     </section>
 
-    <section class="block-section alt" id="for-whom" data-reveal>
+    <section class="t-block quote-section" data-reveal>
         <div class="container">
-            <h2 class="section-title">Кому особенно подойдёт этот курс</h2>
+            <blockquote class="quote-block">
+                <div class="quote-block__image" data-placeholder="Фото или иллюстрация к цитате"></div>
+                <div class="quote-block__content">
+                    <p class="quote-text">Спокойствие — не роскошь. Это основа устойчивой жизни.</p>
+                    <footer class="quote-author">— из курса «Базовый код спокойствия»</footer>
+                </div>
+            </blockquote>
+        </div>
+    </section>
+
+    <section class="t-block t-block--alt block-section" id="for-whom" data-reveal>
+        <div class="container container--wide">
+            <h2 class="section-title section-title--center">Кому особенно подойдёт этот курс</h2>
             <p class="block-lead center">Для людей, которые принимают решения, отвечают за результат и устали жить в постоянной мобилизации.</p>
             <div class="for-whom-cards">
-                <div class="for-whom-card">Предприниматели</div>
-                <div class="for-whom-card">Топ-менеджеры</div>
-                <div class="for-whom-card">Врачи и медработники</div>
-                <div class="for-whom-card">Инвесторы</div>
-                <div class="for-whom-card">IT и консультанты</div>
+                <div class="for-whom-card">
+                    <div class="for-whom-card__icon" data-placeholder="иконка"></div>
+                    <span>Предприниматели</span>
+                </div>
+                <div class="for-whom-card">
+                    <div class="for-whom-card__icon" data-placeholder="иконка"></div>
+                    <span>Топ-менеджеры</span>
+                </div>
+                <div class="for-whom-card">
+                    <div class="for-whom-card__icon" data-placeholder="иконка"></div>
+                    <span>Врачи и медработники</span>
+                </div>
+                <div class="for-whom-card">
+                    <div class="for-whom-card__icon" data-placeholder="иконка"></div>
+                    <span>Инвесторы</span>
+                </div>
+                <div class="for-whom-card">
+                    <div class="for-whom-card__icon" data-placeholder="иконка"></div>
+                    <span>IT и консультанты</span>
+                </div>
             </div>
         </div>
     </section>
 
-    <section class="block-section" data-reveal>
-        <div class="container">
-            <h2 class="section-title">Что вы получите за 21 день</h2>
-            <p class="block-lead">Не «новую версию себя». А возврат к нормальному состоянию системы.</p>
-            <p><strong>Типичные результаты:</strong></p>
-            <ul class="list-block">
-                <li>сон становится глубже и стабильнее</li>
-                <li>снижается фоновая тревога</li>
-                <li>меньше раздражения и срывов</li>
-                <li>появляется ровная энергия</li>
-                <li>решения принимаются спокойнее</li>
-                <li>уходит ощущение постоянного напряжения</li>
-                <li>возвращается интерес к жизни</li>
-            </ul>
+    <section class="t-block block-section" data-reveal>
+        <div class="container container--wide">
+            <h2 class="section-title section-title--center">Что вы получите за 21 день</h2>
+            <p class="block-lead block-lead--narrow">Не «новую версию себя». А возврат к нормальному состоянию системы.</p>
+            <div class="result-cards">
+                <div class="result-card"><div class="result-card__icon" data-placeholder="иконка"></div><span>сон становится глубже и стабильнее</span></div>
+                <div class="result-card"><div class="result-card__icon" data-placeholder="иконка"></div><span>снижается фоновая тревога</span></div>
+                <div class="result-card"><div class="result-card__icon" data-placeholder="иконка"></div><span>меньше раздражения и срывов</span></div>
+                <div class="result-card"><div class="result-card__icon" data-placeholder="иконка"></div><span>появляется ровная энергия</span></div>
+                <div class="result-card"><div class="result-card__icon" data-placeholder="иконка"></div><span>решения принимаются спокойнее</span></div>
+                <div class="result-card"><div class="result-card__icon" data-placeholder="иконка"></div><span>уходит ощущение постоянного напряжения</span></div>
+                <div class="result-card"><div class="result-card__icon" data-placeholder="иконка"></div><span>возвращается интерес к жизни</span></div>
+            </div>
         </div>
     </section>
 
-    <section class="block-section alt" data-reveal>
+    <section class="t-block t-block--alt block-section" data-reveal>
         <div class="container">
             <h2 class="section-title">Почему именно 21 день</h2>
             <p>21 день — это не магия. Это оптимальный цикл, чтобы: удержать фокус без перегруза, восстановить базовые опоры, увидеть измеримые изменения, вывести систему из режима выживания.</p>
@@ -125,63 +189,118 @@
         </div>
     </section>
 
-    <section class="block-section" id="program" data-reveal>
-        <div class="container">
-            <h2 class="section-title">Как устроен курс</h2>
-            <h3 class="sub-section-title">Формат</h3>
-            <ul class="list-block">
-                <li>7 видео по 25–30 минут</li>
-                <li>насыщенные PDF-материалы (книга, не конспект)</li>
-                <li>рабочая тетрадь + трекеры</li>
-                <li>бонусный эфир с 50+ антистресс-лайфхаками</li>
-            </ul>
-            <p><strong>Вы тратите:</strong> 10–20 минут в день, без перегруза, без идеальности.</p>
+    <section class="t-block block-section" id="program" data-reveal>
+        <div class="container container--wide">
+            <h2 class="section-title section-title--center">Как устроен курс</h2>
+            <div class="format-cards">
+                <div class="format-card"><div class="format-card__icon" data-placeholder="иконка"></div><span>7 видео по 25–30 минут</span></div>
+                <div class="format-card"><div class="format-card__icon" data-placeholder="иконка"></div><span>насыщенные PDF-материалы (книга, не конспект)</span></div>
+                <div class="format-card"><div class="format-card__icon" data-placeholder="иконка"></div><span>рабочая тетрадь + трекеры</span></div>
+                <div class="format-card"><div class="format-card__icon" data-placeholder="иконка"></div><span>бонусный эфир с 50+ антистресс-лайфхаками</span></div>
+            </div>
+            <p class="program-note"><strong>Вы тратите:</strong> 10–20 минут в день, без перегруза, без идеальности.</p>
 
-            <h3 class="sub-section-title">Программа курса</h3>
-            <ol class="program-list">
-                <li><strong>Стресс: как он реально работает.</strong> Стресс как режим. Аллостатическая нагрузка. Почему сильные выгорают тише всех.</li>
-                <li><strong>Сон и мелатонин — база восстановления.</strong> Почему без сна психика не регулируется.</li>
-                <li><strong>Биохимия стресса.</strong> Питание, вода, энергия, магний, дофамин. Почему тянет на сладкое и телефон.</li>
-                <li><strong>Порядок = спокойствие.</strong> Когнитивная гигиена. Как снизить нагрузку на мозг.</li>
-                <li><strong>Тело и быстрая регуляция.</strong> Движение, баня, холод, плавание, гормезис.</li>
-                <li><strong>Скрытый биологический стресс.</strong> Когда проблема не в голове. Без диагнозов и лечения.</li>
-                <li><strong>Интеграция без откатов.</strong> Психика, отношения, смысл, устойчивость.</li>
-            </ol>
-            <p class="block-note"><strong>Бонус:</strong> Антистресс-оператор — 50+ решений для реальной жизни.</p>
+            <h3 class="sub-section-title sub-section-title--center">Программа курса</h3>
+            <div class="program-cards">
+                <div class="program-card">
+                    <div class="program-card__thumb" data-placeholder="Превью модуля"></div>
+                    <div class="program-card__body">
+                        <span class="program-card__num">1</span>
+                        <h4 class="program-card__title">Стресс: как он реально работает</h4>
+                        <p>Стресс как режим. Аллостатическая нагрузка. Почему сильные выгорают тише всех.</p>
+                    </div>
+                </div>
+                <div class="program-card">
+                    <div class="program-card__thumb" data-placeholder="Превью модуля"></div>
+                    <div class="program-card__body">
+                        <span class="program-card__num">2</span>
+                        <h4 class="program-card__title">Сон и мелатонин — база восстановления</h4>
+                        <p>Почему без сна психика не регулируется.</p>
+                    </div>
+                </div>
+                <div class="program-card">
+                    <div class="program-card__thumb" data-placeholder="Превью модуля"></div>
+                    <div class="program-card__body">
+                        <span class="program-card__num">3</span>
+                        <h4 class="program-card__title">Биохимия стресса</h4>
+                        <p>Питание, вода, энергия, магний, дофамин. Почему тянет на сладкое и телефон.</p>
+                    </div>
+                </div>
+                <div class="program-card">
+                    <div class="program-card__thumb" data-placeholder="Превью модуля"></div>
+                    <div class="program-card__body">
+                        <span class="program-card__num">4</span>
+                        <h4 class="program-card__title">Порядок = спокойствие</h4>
+                        <p>Когнитивная гигиена. Как снизить нагрузку на мозг.</p>
+                    </div>
+                </div>
+                <div class="program-card">
+                    <div class="program-card__thumb" data-placeholder="Превью модуля"></div>
+                    <div class="program-card__body">
+                        <span class="program-card__num">5</span>
+                        <h4 class="program-card__title">Тело и быстрая регуляция</h4>
+                        <p>Движение, баня, холод, плавание, гормезис.</p>
+                    </div>
+                </div>
+                <div class="program-card">
+                    <div class="program-card__thumb" data-placeholder="Превью модуля"></div>
+                    <div class="program-card__body">
+                        <span class="program-card__num">6</span>
+                        <h4 class="program-card__title">Скрытый биологический стресс</h4>
+                        <p>Когда проблема не в голове. Без диагнозов и лечения.</p>
+                    </div>
+                </div>
+                <div class="program-card">
+                    <div class="program-card__thumb" data-placeholder="Превью модуля"></div>
+                    <div class="program-card__body">
+                        <span class="program-card__num">7</span>
+                        <h4 class="program-card__title">Интеграция без откатов</h4>
+                        <p>Психика, отношения, смысл, устойчивость.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bonus-badge">
+                <strong>Бонус:</strong> Антистресс-оператор — 50+ решений для реальной жизни.
+            </div>
         </div>
     </section>
 
-    <section class="block-section alt" id="author" data-reveal>
+    <section class="t-block t-block--alt block-section" id="author" data-reveal>
         <div class="container">
-            <h2 class="section-title">Кто автор курса</h2>
-            <p class="author-name">Екатерина Мак</p>
-            <ul class="list-block">
-                <li>предприниматель</li>
-                <li>основатель IT-проектов</li>
-                <li>дипломированный нутрициолог</li>
-                <li>коуч</li>
-                <li>исследователь психосоматики и стресса</li>
-                <li>автор книг о здоровье и устойчивости</li>
-            </ul>
-            <p>Я пришла к этой системе из практики. Когда стресс ушёл не через отдых, а через настройку всей системы, пришло спокойствие, ясность решений и устойчивость в бизнесе и жизни.</p>
+            <div class="author-card">
+                <div class="author-card__photo" data-placeholder="Фото автора"></div>
+                <div class="author-card__content">
+                    <h2 class="section-title">Кто автор курса</h2>
+                    <p class="author-name">Екатерина Мак</p>
+                    <ul class="list-block">
+                        <li>предприниматель</li>
+                        <li>основатель IT-проектов</li>
+                        <li>дипломированный нутрициолог</li>
+                        <li>коуч</li>
+                        <li>исследователь психосоматики и стресса</li>
+                        <li>автор книг о здоровье и устойчивости</li>
+                    </ul>
+                    <p>Я пришла к этой системе из практики. Когда стресс ушёл не через отдых, а через настройку всей системы, пришло спокойствие, ясность решений и устойчивость в бизнесе и жизни.</p>
+                </div>
+            </div>
         </div>
     </section>
 
-    <section class="block-section" data-reveal>
+    <section class="t-block trust-strip" data-reveal>
         <div class="container">
-            <h2 class="section-title">Почему этому можно доверять</h2>
-            <ul class="list-block">
-                <li>курс основан на современных научных моделях стресса</li>
-                <li>используется язык, понятный врачам и специалистам</li>
-                <li>нет медицинских обещаний</li>
-                <li>есть чёткие границы ответственности</li>
-                <li>вы понимаете, почему это работает</li>
-            </ul>
-            <p class="block-note">Это образовательная система, а не инфопродукт «про вдохновение».</p>
+            <p class="trust-strip__label">Почему этому можно доверять</p>
+            <div class="trust-strip__items">
+                <div class="trust-item"><div class="trust-item__icon" data-placeholder="иконка"></div><span>научные модели стресса</span></div>
+                <div class="trust-item"><div class="trust-item__icon" data-placeholder="иконка"></div><span>язык для специалистов</span></div>
+                <div class="trust-item"><div class="trust-item__icon" data-placeholder="иконка"></div><span>без медицинских обещаний</span></div>
+                <div class="trust-item"><div class="trust-item__icon" data-placeholder="иконка"></div><span>чёткие границы</span></div>
+                <div class="trust-item"><div class="trust-item__icon" data-placeholder="иконка"></div><span>понятно, почему работает</span></div>
+            </div>
+            <p class="trust-strip__note">Это образовательная система, а не инфопродукт «про вдохновение».</p>
         </div>
     </section>
 
-    <section class="block-section alt" data-reveal>
+    <section class="t-block t-block--alt block-section" data-reveal>
         <div class="container">
             <h2 class="section-title">Кому курс не подойдёт</h2>
             <ul class="list-block">
@@ -193,19 +312,20 @@
         </div>
     </section>
 
-    <section class="block-section" data-reveal>
+    <section class="t-block t-block--alt block-section" data-reveal>
         <div class="container">
             <h2 class="section-title">Форматы участия и тарифы</h2>
-            <p class="block-note">(блок тарифов вставляется здесь)</p>
+            <p class="block-note"></p>
         </div>
     </section>
 
-    <section class="block-section cta-block" data-reveal>
+    <section class="t-block t-block-cta block-section cta-block" data-reveal>
+        <div class="cta-block__bg" data-placeholder="Фоновое изображение для CTA (опционально)"></div>
         <div class="container">
-            <h2 class="section-title">Финальный вопрос</h2>
-            <p class="block-lead">Если вы продолжите жить в режиме постоянной мобилизации — что это будет стоить вам через год? Здоровья? Отношений? Ясности?</p>
-            <p class="block-note">Спокойствие — не роскошь. Это основа устойчивой жизни.</p>
-            <button class="cta-button large" id="join-button-2" data-endpoint="/api/landing/join">
+            <h2 class="section-title cta-block__title">Финальный вопрос</h2>
+            <p class="cta-block__lead">Если вы продолжите жить в режиме постоянной мобилизации — что это будет стоить вам через год? Здоровья? Отношений? Ясности?</p>
+            <p class="cta-block__note">Спокойствие — не роскошь. Это основа устойчивой жизни.</p>
+            <button class="cta-button cta-button--large" id="join-button-2" data-endpoint="/api/landing/join">
                 Присоединиться к курсу «Базовый код спокойствия»
             </button>
         </div>
