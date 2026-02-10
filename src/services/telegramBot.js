@@ -5,6 +5,23 @@ import { logger } from '../utils/logger.js';
 import PostSettingsService from './postSettingsService.js';
 import * as paidAccessStore from './paidAccessStore.js';
 
+/** URL медиа должен быть абсолютным — Telegram запрашивает его со своих серверов */
+function toAbsoluteMediaUrl(url) {
+  if (!url || typeof url !== 'string') return '';
+  const u = url.trim();
+  if (u.startsWith('http://') || u.startsWith('https://')) return u;
+  const base = (config.publicUrl || '').replace(/\/$/, '');
+  return base ? base + (u.startsWith('/') ? u : '/' + u) : u;
+}
+
+function normalizeMediaType(type) {
+  const t = (type || '').toLowerCase();
+  if (t === 'image' || t === 'photo') return 'photo';
+  if (t === 'video') return 'video';
+  if (t === 'document' || t === 'doc') return 'document';
+  return t || 'photo';
+}
+
 // Код доступа после оплаты — только если он есть в хранилище (создан при оплате). Иначе это кодовое слово.
 class TelegramBotService {
   constructor(postSettingsService, paidAccessStoreRef = null) {
@@ -128,9 +145,9 @@ class TelegramBotService {
   async sendReply(chatId, settings) {
     const text = settings.telegramMessage || 'Привет! Вот инструкция для тебя.';
     const buttons = Array.isArray(settings.telegramButtons) ? settings.telegramButtons : [];
-    const media = settings.telegramMedia && settings.telegramMedia.url
-      ? settings.telegramMedia
-      : null;
+    const rawMedia = settings.telegramMedia && settings.telegramMedia.url ? settings.telegramMedia : null;
+    const mediaUrl = rawMedia ? toAbsoluteMediaUrl(rawMedia.url) : '';
+    const media = mediaUrl ? { type: normalizeMediaType(rawMedia.type), url: mediaUrl } : null;
 
     const replyMarkup = buttons.length > 0
       ? {
@@ -144,21 +161,20 @@ class TelegramBotService {
       : undefined;
 
     const opts = replyMarkup ? { reply_markup: replyMarkup } : {};
-    if (media) {
+    if (media && media.url) {
       opts.caption = text;
-      const url = media.url.trim();
       try {
         if (media.type === 'photo') {
-          await this.bot.sendPhoto(chatId, url, opts);
+          await this.bot.sendPhoto(chatId, media.url, opts);
         } else if (media.type === 'video') {
-          await this.bot.sendVideo(chatId, url, opts);
+          await this.bot.sendVideo(chatId, media.url, opts);
         } else if (media.type === 'document') {
-          await this.bot.sendDocument(chatId, url, opts);
+          await this.bot.sendDocument(chatId, media.url, opts);
         } else {
-          await this.bot.sendMessage(chatId, text, replyMarkup ? { reply_markup: opts.reply_markup } : {});
+          await this.bot.sendPhoto(chatId, media.url, opts);
         }
       } catch (err) {
-        logger.error('Ошибка отправки медиа в Telegram', err);
+        logger.error('Ошибка отправки медиа в Telegram', err.message, media.url);
         await this.bot.sendMessage(chatId, text, replyMarkup ? { reply_markup: opts.reply_markup } : {});
       }
     } else {
