@@ -4,6 +4,7 @@ import { config } from '../../config/config.js';
 import { logger } from '../utils/logger.js';
 import { YooKassaService } from './yookassaService.js';
 import * as paidAccessStore from './paidAccessStore.js';
+import { securityHeaders, rateLimitJoin, jsonBodyLimit, isValidAmount, isValidTariffId, sanitizeDescription, isValidAccessCode } from '../utils/security.js';
 
 class LandingAPI {
   constructor(paidAccessStoreRef = null) {
@@ -12,9 +13,9 @@ class LandingAPI {
     this.port = 3003;
     this.paidAccessStore = paidAccessStoreRef || paidAccessStore;
     this.yookassa = new YooKassaService(this.paidAccessStore);
-    // ЮKassa webhook должен получать сырой body для проверки подписи (если понадобится)
-    this.app.use(express.json({ verify: (req, res, buf) => { req.rawBody = buf; } }));
-    this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(securityHeaders);
+    this.app.use(express.json({ limit: jsonBodyLimit, verify: (req, res, buf) => { req.rawBody = buf; } }));
+    this.app.use(express.urlencoded({ extended: true, limit: jsonBodyLimit }));
   }
 
   setupRoutes() {
@@ -44,14 +45,19 @@ class LandingAPI {
     });
 
     // API: Присоединиться к курсу = оплата через ЮKassa (тариф из модалки)
-    this.app.post('/api/landing/join', async (req, res) => {
+    this.app.post('/api/landing/join', rateLimitJoin, async (req, res) => {
       try {
         const { amount, tariffId, description } = req.body || {};
-        logger.info('Join (payment) request:', { amount, tariffId, ...req.body });
+        if (!isValidAmount(amount)) {
+          return res.status(400).json({ error: 'Некорректная сумма оплаты' });
+        }
+        const safeTariffId = tariffId && isValidTariffId(tariffId) ? String(tariffId).trim() : '';
+        const safeDescription = sanitizeDescription(description);
+        logger.info('Join (payment) request:', { amount: Number(amount), tariffId: safeTariffId });
         const payment = await this.yookassa.createPayment({
-          amount: amount ? Number(amount) : undefined,
-          tariffId: tariffId || undefined,
-          description: description || undefined,
+          amount: Number(amount),
+          tariffId: safeTariffId,
+          description: safeDescription || undefined,
         });
         const redirectUrl = payment?.confirmationUrl || process.env.PAYMENT_URL || '/payment';
         res.json({
@@ -67,7 +73,8 @@ class LandingAPI {
 
     // После успешной оплаты ЮKassa редиректит сюда (?code=ACCESS_CODE) — ведём в бота для активации доступа
     this.app.get('/payment/success', (req, res) => {
-      const code = (req.query.code || '').trim();
+      const rawCode = (req.query.code || '').trim();
+      const code = isValidAccessCode(rawCode) ? rawCode : '';
       const baseUrl = process.env.REDIRECT_URL || 'https://t.me/instbotqqetest123_bot';
       const telegramUrl = code ? `${baseUrl}?start=${encodeURIComponent(code)}` : baseUrl;
       res.redirect(telegramUrl);
@@ -78,14 +85,14 @@ class LandingAPI {
       res.redirect(config.publicUrl + '/landing');
     });
 
-    // Webhook ЮKassa: уведомление об успешной оплате
+    // Webhook ЮKassa: уведомление об успешной оплате (проверяем формат кода)
     this.app.post('/payment/webhook/yookassa', (req, res) => {
       res.sendStatus(200);
       const body = req.body || {};
       if (body.type !== 'notification' || body.event !== 'payment.succeeded') return;
       const obj = body.object || {};
-      const accessCode = obj.metadata?.access_code;
-      if (!accessCode) return;
+      const accessCode = obj.metadata && typeof obj.metadata.access_code === 'string' ? obj.metadata.access_code.trim() : '';
+      if (!isValidAccessCode(accessCode)) return;
       this.paidAccessStore.markPaid(accessCode);
       logger.info('ЮKassa webhook: оплата подтверждена, код доступа', accessCode);
     });

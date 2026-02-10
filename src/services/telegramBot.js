@@ -5,9 +5,7 @@ import { logger } from '../utils/logger.js';
 import PostSettingsService from './postSettingsService.js';
 import * as paidAccessStore from './paidAccessStore.js';
 
-// Код доступа после оплаты: 8–20 букв/цифр (без похожих на 0/O, 1/l)
-const ACCESS_CODE_REGEX = /^[a-z2-9]{8,20}$/i;
-
+// Код доступа после оплаты — только если он есть в хранилище (создан при оплате). Иначе это кодовое слово.
 class TelegramBotService {
   constructor(postSettingsService, paidAccessStoreRef = null) {
     if (!config.telegram.botToken) {
@@ -31,8 +29,9 @@ class TelegramBotService {
       const param = (match[1] || '').trim();
 
       if (param) {
-        // Код доступа после оплаты (из return_url лендинга)
-        if (ACCESS_CODE_REGEX.test(param)) {
+        // Код доступа после оплаты — только если такой код реально есть в хранилище (создан при создании платежа)
+        const paymentRecord = this.paidAccess.getPayment(param);
+        if (paymentRecord) {
           if (this.paidAccess.isPaid(param)) {
             const activated = this.paidAccess.activateCode(param, chatId);
             if (activated) {

@@ -2,6 +2,7 @@
 import express from 'express';
 import { config } from '../../config/config.js';
 import { logger } from '../utils/logger.js';
+import { securityHeaders, jsonBodyLimit } from '../utils/security.js';
 import MessagingAPI from './messagingAPI.js';
 import PostSettingsService from './postSettingsService.js';
 import { isReplied, markReplied } from './repliedUsersStore.js';
@@ -9,8 +10,9 @@ import { isReplied, markReplied } from './repliedUsersStore.js';
 class WebhookService {
   constructor(postSettingsService, telegramBotService) {
     this.app = express();
-    this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(securityHeaders);
+    this.app.use(express.json({ limit: jsonBodyLimit }));
+    this.app.use(express.urlencoded({ extended: true, limit: jsonBodyLimit }));
     this.messagingAPI = new MessagingAPI();
     this.postSettingsService = postSettingsService || new PostSettingsService();
     this.telegramBotService = telegramBotService;

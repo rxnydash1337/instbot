@@ -9,6 +9,7 @@ import InstagramService from './instagramService.js';
 import PostSettingsService from './postSettingsService.js';
 import { config } from '../../config/config.js';
 import { logger } from '../utils/logger.js';
+import { securityHeaders, rateLimitLogin, clearLoginAttempts, sanitizePostId, sanitizeWordId } from '../utils/security.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '../..');
@@ -17,14 +18,24 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
+const ALLOWED_MIMES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadsDir),
   filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname) || '';
-    cb(null, `${Date.now()}-${crypto.randomBytes(6).toString('hex')}${ext}`);
+    const ext = (path.extname(file.originalname) || '').toLowerCase().slice(0, 6) || '.bin';
+    const safeExt = /^\.(jpe?g|png|gif|webp|pdf)$/.test(ext) ? ext : '.bin';
+    cb(null, `${Date.now()}-${crypto.randomBytes(6).toString('hex')}${safeExt}`);
   },
 });
-const upload = multer({ storage, limits: { fileSize: 20 * 1024 * 1024 } });
+const upload = multer({
+  storage,
+  limits: { fileSize: 20 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    const mime = (file.mimetype || '').toLowerCase();
+    if (ALLOWED_MIMES.includes(mime)) return cb(null, true);
+    cb(new Error('Разрешены только изображения (JPEG, PNG, GIF, WebP) и PDF'));
+  },
+});
 
 const SESSION_COOKIE = 'admin_session';
 const SESSION_MAX_AGE = 7 * 24 * 60 * 60 * 1000;
@@ -44,8 +55,8 @@ function parseCookies(cookieHeader) {
 class AdminPanel {
   constructor(instagramService, telegramBotService) {
     this.app = express();
-    this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(express.json({ limit: '100kb' }));
+    this.app.use(express.urlencoded({ extended: true, limit: '100kb' }));
     this.instagramService = instagramService;
     this.telegramBotService = telegramBotService;
     this.postSettingsService = new PostSettingsService();
@@ -86,6 +97,7 @@ class AdminPanel {
 
     const router = express.Router({ mergeParams: true });
 
+    router.use(securityHeaders);
     router.use(this.checkAuth.bind(this));
 
     router.use('/admin', express.static('public/admin'));
@@ -95,14 +107,16 @@ class AdminPanel {
       res.sendFile('login.html', { root: 'public/admin' });
     });
 
-    router.post('/api/login', (req, res) => {
+    router.post('/api/login', rateLimitLogin, (req, res) => {
       const { username, password } = req.body || {};
       const p = (process.env.ADMIN_PASSWORD || '').trim();
       const adminPassword = p || config.admin.password || 'admin';
       if (username === 'admin' && password && password === adminPassword) {
+        clearLoginAttempts(req);
         const token = crypto.randomBytes(32).toString('hex');
         this.sessions.add(token);
-        res.setHeader('Set-Cookie', `${SESSION_COOKIE}=${token}; Path=${this.basePath}; HttpOnly; SameSite=Lax; Max-Age=${SESSION_MAX_AGE / 1000}`);
+        const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+        res.setHeader('Set-Cookie', `${SESSION_COOKIE}=${token}; Path=${this.basePath}; HttpOnly; SameSite=Strict; Max-Age=${SESSION_MAX_AGE / 1000}${secure}`);
         return res.json({ success: true });
       }
       res.status(401).json({ success: false, error: 'Неверный логин или пароль' });
@@ -120,12 +134,17 @@ class AdminPanel {
       res.sendFile('index.html', { root: 'public/admin' });
     });
 
-    router.post('/api/upload', upload.single('file'), (req, res) => {
-      if (!req.file) {
-        return res.status(400).json({ error: 'Файл не выбран' });
-      }
-      const url = `${config.publicUrl.replace(/\/$/, '')}/uploads/${req.file.filename}`;
-      res.json({ url });
+    router.post('/api/upload', (req, res, next) => {
+      upload.single('file')(req, res, (err) => {
+        if (err) {
+          return res.status(400).json({ error: err.message || 'Недопустимый тип или размер файла' });
+        }
+        if (!req.file) {
+          return res.status(400).json({ error: 'Файл не выбран' });
+        }
+        const url = `${config.publicUrl.replace(/\/$/, '')}/uploads/${req.file.filename}`;
+        res.json({ url });
+      });
     });
 
     // API: Получить все посты (при недоступности Instagram — пустой массив)
@@ -155,7 +174,7 @@ class AdminPanel {
 
     router.post('/api/words', (req, res) => {
       const { codeWord, telegramMessage, redirectUrl, enabled, telegramMedia, telegramButtons } = req.body || {};
-      const word = (codeWord || '').trim();
+      const word = (codeWord || '').trim().slice(0, 100);
       if (!word) {
         return res.status(400).json({ error: 'Кодовое слово обязательно' });
       }
@@ -178,7 +197,8 @@ class AdminPanel {
     });
 
     router.delete('/api/words/:id', (req, res) => {
-      const { id } = req.params;
+      const id = sanitizeWordId(req.params.id);
+      if (!id) return res.status(404).json({ error: 'Не найдено' });
       const success = this.postSettingsService.deleteWordSettings(id);
       if (success) {
         res.json({ success: true, message: 'Удалено' });
@@ -189,14 +209,16 @@ class AdminPanel {
 
     // API: Получить настройки поста
     router.get('/api/posts/:postId/settings', (req, res) => {
-      const { postId } = req.params;
+      const postId = sanitizePostId(req.params.postId);
+      if (!postId) return res.status(404).json({ error: 'Не найдено' });
       const settings = this.postSettingsService.getPostSettings(postId);
       res.json(settings || {});
     });
 
     // API: Сохранить настройки поста
     router.post('/api/posts/:postId/settings', (req, res) => {
-      const { postId } = req.params;
+      const postId = sanitizePostId(req.params.postId);
+      if (!postId) return res.status(404).json({ error: 'Не найдено' });
       const { codeWord, commentReply, directReply, redirectUrl, telegramMessage, enabled, telegramMedia, telegramButtons } = req.body;
 
       if (!codeWord) {
@@ -242,7 +264,8 @@ class AdminPanel {
 
     // API: Удалить настройки поста
     router.delete('/api/posts/:postId/settings', (req, res) => {
-      const { postId } = req.params;
+      const postId = sanitizePostId(req.params.postId);
+      if (!postId) return res.status(404).json({ error: 'Не найдено' });
       const success = this.postSettingsService.deletePostSettings(postId);
       if (success) {
         res.json({ success: true, message: 'Настройки удалены' });
