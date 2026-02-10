@@ -9,7 +9,7 @@ import InstagramService from './instagramService.js';
 import PostSettingsService from './postSettingsService.js';
 import { config } from '../../config/config.js';
 import { logger } from '../utils/logger.js';
-import { securityHeaders, rateLimitLogin, clearLoginAttempts, sanitizePostId, sanitizeWordId } from '../utils/security.js';
+import { securityHeaders, clearLoginAttempts, sanitizePostId, sanitizeWordId } from '../utils/security.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '../..');
@@ -69,8 +69,8 @@ class AdminPanel {
   }
 
   checkAuth(req, res, next) {
-    const publicPaths = ['/login', '/admin/login.html', '/admin/style.css', '/admin/script.js'];
-    if (publicPaths.includes(req.path) || req.path === '/api/login') {
+    // Без авторизации: страница входа, API входа и вся статика /admin/* (все .js, .css и т.д.)
+    if (req.path === '/login' || req.path === '/api/login' || req.path.startsWith('/admin/')) {
       return next();
     }
     const cookies = parseCookies(req.headers.cookie);
@@ -107,7 +107,7 @@ class AdminPanel {
       res.sendFile('login.html', { root: 'public/admin' });
     });
 
-    router.post('/api/login', rateLimitLogin, (req, res) => {
+    router.post('/api/login', (req, res) => {
       const { username, password } = req.body || {};
       const p = (process.env.ADMIN_PASSWORD || '').trim();
       const adminPassword = p || config.admin.password || 'admin';

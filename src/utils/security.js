@@ -52,7 +52,7 @@ export function clearLoginAttempts(req) {
   loginCounts.delete(ip);
 }
 
-/** Заголовки безопасности для всех ответов */
+/** Заголовки безопасности. Content-Security-Policy не ставим — иначе блокируются свои же .js (админка, лендинг). */
 export function securityHeaders(req, res, next) {
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('X-Content-Type-Options', 'nosniff');
