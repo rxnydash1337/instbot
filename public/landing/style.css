@@ -167,7 +167,14 @@ html { scroll-behavior: smooth; }
     transform: translateY(0);
 }
 
-/* Block sections (from doc) */
+/* Block sections — одна центрированная колонка, текст внутри по левому краю (как в примере) */
+.block-section .container {
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+}
+
 .block-section {
     padding: 56px 0;
 }
@@ -180,16 +187,14 @@ html { scroll-behavior: smooth; }
     padding: 64px 0;
     text-align: center;
 }
+.block-section.cta-block .container {
+    text-align: center;
+}
 
 .block-section p {
     margin-bottom: 1rem;
     color: var(--text);
-    max-width: 680px;
-}
-
-.block-section .container > p {
-    margin-left: auto;
-    margin-right: auto;
+    max-width: none;
 }
 
 .block-lead {
@@ -204,9 +209,9 @@ html { scroll-behavior: smooth; }
 
 .list-block {
     list-style: none;
-    margin: 1rem auto 1.5rem;
+    margin: 1rem 0 1.5rem;
     padding: 0;
-    max-width: 560px;
+    max-width: none;
 }
 
 .list-block li {
@@ -232,19 +237,10 @@ html { scroll-behavior: smooth; }
 .sub-section-title:first-of-type {
     margin-top: 0;
 }
-#program .list-block,
-#program .program-list,
-#program .sub-section-title + p,
-#program .block-note {
-    margin-left: 1rem;
-}
-#program .list-block { max-width: 520px; }
-#program .program-list { max-width: 600px; }
-
 .program-list {
-    margin: 1rem auto 1.5rem;
+    margin: 1rem 0 1.5rem;
     padding-left: 1.75rem;
-    max-width: 640px;
+    max-width: none;
     list-style: decimal;
 }
 
@@ -281,10 +277,13 @@ html { scroll-behavior: smooth; }
     font-weight: 700;
     color: var(--text);
     margin-bottom: 40px;
-    text-align: center;
+    text-align: left;
 }
 .section-title:first-child {
     margin-top: 0;
+}
+.block-section.cta-block .section-title {
+    text-align: center;
 }
 
 .gift-content {
