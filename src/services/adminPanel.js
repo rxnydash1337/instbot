@@ -227,17 +227,16 @@ class AdminPanel {
 
     // API: Получить информацию о Telegram боте
     router.get('/api/telegram/info', (req, res) => {
-      if (!this.telegramBotService || !this.telegramBotService.getBotUrl) {
+      if (!this.telegramBotService || typeof this.telegramBotService.getBotUrl !== 'function') {
         return res.json({ available: false });
       }
-      
       const botUrl = this.telegramBotService.getBotUrl();
       const botUsername = this.telegramBotService.getBotUsername();
-      
+      const available = !!(botUrl && botUsername);
       res.json({
-        available: true,
-        botUrl,
-        botUsername,
+        available,
+        botUrl: available ? botUrl : null,
+        botUsername: available ? botUsername : null,
       });
     });
 

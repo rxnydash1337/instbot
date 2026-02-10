@@ -64,7 +64,7 @@ async function loadWords() {
         }
         container.innerHTML = words.map(w => {
             const status = w.enabled ? 'active' : 'inactive';
-            const link = telegramBotInfo?.available ? `${telegramBotInfo.botUrl}?start=${encodeURIComponent(w.codeWord)}` : '';
+            const link = (telegramBotInfo?.botUrl && telegramBotInfo?.botUsername) ? `https://t.me/${telegramBotInfo.botUsername}?start=${encodeURIComponent(w.codeWord)}` : '';
             const hasMedia = w.telegramMedia && w.telegramMedia.url;
             const hasButtons = Array.isArray(w.telegramButtons) && w.telegramButtons.length > 0;
             const extras = [];
@@ -316,8 +316,8 @@ async function saveSettings(event, postId) {
     const form = event.target;
     const codeWord = form.codeWord.value;
     let redirectUrl = form.redirectUrl.value;
-    if (!redirectUrl && telegramBotInfo?.available) {
-        redirectUrl = `${telegramBotInfo.botUrl}?start=${encodeURIComponent(codeWord)}`;
+    if (!redirectUrl && telegramBotInfo?.botUsername) {
+        redirectUrl = `https://t.me/${telegramBotInfo.botUsername}?start=${encodeURIComponent(codeWord)}`;
     }
     const mediaType = (form.telegramMediaType && form.telegramMediaType.value) || '';
     const mediaUrl = (form.telegramMediaUrl && form.telegramMediaUrl.value && form.telegramMediaUrl.value.trim()) || '';
