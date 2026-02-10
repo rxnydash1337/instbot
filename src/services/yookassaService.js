@@ -36,7 +36,7 @@ export class YooKassaService {
   async createPayment(opts = {}) {
     if (!this.enabled) return null;
 
-    const amount = opts.amount ?? parseFloat(process.env.COURSE_PRICE) || 0;
+    const amount = (opts.amount != null ? opts.amount : parseFloat(process.env.COURSE_PRICE)) || 0;
     const tariffId = opts.tariffId || '';
     const publicUrl = (process.env.PUBLIC_URL || '').replace(/\/$/, '');
     const accessCode = generateAccessCode();
