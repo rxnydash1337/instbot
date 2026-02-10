@@ -27,7 +27,7 @@ if (!fs.existsSync(dataDir)) {
 const defaultSettings = {
   commentReply: 'напиши в директ!',
   directReply: 'Спасибо за интерес! Нажми на кнопку ниже, чтобы получить инструкцию.',
-  redirectUrl: process.env.REDIRECT_URL || 'https://t.me/your_bot',
+  redirectUrl: process.env.REDIRECT_URL || 'https://t.me/instbotqqetest123_bot',
 };
 
 class PostSettingsService {

@@ -31,31 +31,36 @@
 
 body {
     font-family: var(--font-body);
+    font-size: 1.25rem;
     color: var(--text);
-    line-height: 1.6;
+    line-height: 1.65;
     background: var(--bg);
     -webkit-font-smoothing: antialiased;
 }
 
 .container {
-    max-width: 1120px;
+    width: 100%;
+    max-width: none;
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 0 40px;
 }
 .container--wide {
-    max-width: 1000px;
+    max-width: none;
+    width: 100%;
 }
 
 html { scroll-behavior: smooth; }
 
 /* ========== Tilda-style: блочный сайт ========== */
 .tilda-style .container {
-    max-width: 1170px;
-    padding-left: 30px;
-    padding-right: 30px;
+    max-width: none;
+    width: 100%;
+    padding-left: 48px;
+    padding-right: 48px;
 }
 .tilda-style .container--wide {
-    max-width: 1140px;
+    max-width: none;
+    width: 100%;
 }
 .t-block {
     padding: 100px 0;
@@ -85,11 +90,11 @@ html { scroll-behavior: smooth; }
 }
 .tilda-style .section-title {
     font-family: var(--font-display);
-    font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
     font-weight: 700;
-    margin-bottom: 32px;
-    padding-bottom: 16px;
-    border-bottom: 3px solid var(--primary);
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 4px solid var(--primary);
     display: inline-block;
     letter-spacing: -0.01em;
 }
@@ -218,12 +223,12 @@ html { scroll-behavior: smooth; }
 }
 .hero-tagline {
     font-family: var(--font-display);
-    font-size: 0.85rem;
+    font-size: 1rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.2em;
     opacity: 0.95;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 }
 .hero-buttons {
     display: flex;
@@ -292,15 +297,15 @@ html { scroll-behavior: smooth; }
 .stats-strip .stat-number {
     display: block;
     font-family: var(--font-display);
-    font-size: 2rem;
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
     font-weight: 700;
     letter-spacing: -0.02em;
     color: var(--primary-dark);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 .stats-strip .stat-label {
     font-family: var(--font-body);
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     font-weight: 500;
     color: var(--text-muted);
 }
@@ -312,30 +317,30 @@ html { scroll-behavior: smooth; }
 
 .main-title {
     font-family: var(--font-heading);
-    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-size: clamp(2.75rem, 7vw, 4.5rem);
     font-weight: 600;
-    margin-bottom: 16px;
+    margin-bottom: 24px;
     line-height: 1.15;
     letter-spacing: -0.02em;
 }
 
 .subtitle {
     font-family: var(--font-reading);
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     font-weight: 500;
-    line-height: 1.5;
+    line-height: 1.55;
     opacity: 0.95;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 }
 
 .header-audience {
     font-family: var(--font-display);
-    font-size: 0.9rem;
+    font-size: 1.15rem;
     font-weight: 500;
     letter-spacing: 0.03em;
     opacity: 0.9;
-    margin-bottom: 28px;
-    max-width: 560px;
+    margin-bottom: 32px;
+    max-width: 640px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -386,20 +391,23 @@ html { scroll-behavior: smooth; }
 
 /* Block sections — одна центрированная колонка, текст внутри по левому краю */
 .block-section .container:not(.container--wide):not(.media-block) {
-    max-width: 720px;
+    max-width: none;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
     text-align: left;
 }
 .media-section .container {
-    max-width: 1120px;
+    max-width: none;
+    width: 100%;
 }
 .media-block {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 48px;
+    gap: 56px;
     align-items: center;
-    max-width: 1120px;
+    max-width: none;
+    width: 100%;
     margin: 0 auto;
     text-align: left;
 }
@@ -464,7 +472,7 @@ html { scroll-behavior: smooth; }
 }
 .benefit-card span {
     color: var(--text);
-    font-size: 0.98rem;
+    font-size: 1.2rem;
 }
 .section-title--center,
 .block-lead.center,
@@ -493,23 +501,25 @@ html { scroll-behavior: smooth; }
 }
 
 .block-section p {
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    font-size: 1.25rem;
+    line-height: 1.7;
     color: var(--text);
     max-width: none;
 }
 
 .block-lead {
-    font-size: 1.08rem;
-    line-height: 1.65;
+    font-size: 1.35rem;
+    line-height: 1.7;
     color: var(--text);
 }
 .block-lead--serif {
     font-family: var(--font-reading);
-    font-size: 1.15rem;
+    font-size: 1.45rem;
 }
 .block-lead--heading {
     font-family: var(--font-heading);
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     font-weight: 500;
 }
 
@@ -517,7 +527,7 @@ html { scroll-behavior: smooth; }
     font-family: var(--font-heading);
     font-style: italic;
     font-weight: 500;
-    font-size: 1.05rem;
+    font-size: 1.35rem;
     color: var(--text);
 }
 
@@ -530,9 +540,10 @@ html { scroll-behavior: smooth; }
 
 .list-block li {
     position: relative;
-    padding-left: 1.25rem;
-    margin-bottom: 0.5rem;
-    color: var(--text-muted);
+    padding-left: 1.5rem;
+    margin-bottom: 0.65rem;
+    font-size: 1.2rem;
+    color: var(--text);
 }
 
 .list-block li::before {
@@ -544,7 +555,7 @@ html { scroll-behavior: smooth; }
 
 .sub-section-title {
     font-family: var(--font-display);
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     font-weight: 700;
     letter-spacing: 0.02em;
     color: var(--primary-dark);
@@ -561,7 +572,8 @@ html { scroll-behavior: smooth; }
 }
 
 .program-list li {
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.9rem;
+    font-size: 1.2rem;
     color: var(--text);
     padding-left: 0.25rem;
 }
@@ -590,7 +602,7 @@ html { scroll-behavior: smooth; }
 }
 
 .section-title {
-    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-size: clamp(2rem, 4vw, 3rem);
     font-weight: 700;
     color: var(--text);
     margin-bottom: 40px;
@@ -637,16 +649,16 @@ html { scroll-behavior: smooth; }
 }
 .quote-text {
     font-family: var(--font-heading);
-    font-size: 1.5rem;
+    font-size: 1.9rem;
     font-weight: 500;
     font-style: italic;
     color: var(--text);
-    margin: 0 0 12px;
-    line-height: 1.4;
+    margin: 0 0 16px;
+    line-height: 1.45;
 }
 .quote-author {
     font-family: var(--font-display);
-    font-size: 0.85rem;
+    font-size: 1rem;
     font-weight: 500;
     letter-spacing: 0.05em;
     text-transform: uppercase;
@@ -684,7 +696,7 @@ html { scroll-behavior: smooth; }
     font-family: var(--font-display);
     font-weight: 600;
     color: var(--text);
-    font-size: 0.95rem;
+    font-size: 1.2rem;
 }
 
 /* Result cards */
@@ -717,7 +729,7 @@ html { scroll-behavior: smooth; }
 }
 .result-card span {
     color: var(--text);
-    font-size: 0.98rem;
+    font-size: 1.2rem;
 }
 
 /* Format & program */
@@ -743,7 +755,7 @@ html { scroll-behavior: smooth; }
     border-radius: 12px;
     background: var(--primary-soft);
 }
-.format-card span { color: var(--text); font-size: 0.95rem; }
+.format-card span { color: var(--text); font-size: 1.2rem; }
 .program-note {
     text-align: center;
     margin: 1.5rem 0 2.5rem;
@@ -810,7 +822,7 @@ html { scroll-behavior: smooth; }
 }
 .program-card__body p {
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 1.15rem;
     color: var(--text-muted);
 }
 .bonus-badge {
