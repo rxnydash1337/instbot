@@ -8,6 +8,7 @@ import WebhookService from './services/webhookService.js';
 import AdminPanel from './services/adminPanel.js';
 import LandingAPI from './services/landingAPI.js';
 import PostSettingsService from './services/postSettingsService.js';
+import * as paidAccessStore from './services/paidAccessStore.js';
 import { logger } from './utils/logger.js';
 
 class InstaBot {
@@ -16,10 +17,10 @@ class InstaBot {
     this.postSettingsService = new PostSettingsService();
     this.commentMonitor = new CommentMonitor(this.instagramService, this.postSettingsService);
     this.directMonitor = new DirectMonitor(this.instagramService);
-    this.telegramBot = new TelegramBotService(this.postSettingsService);
+    this.telegramBot = new TelegramBotService(this.postSettingsService, paidAccessStore);
     this.webhookService = new WebhookService(this.postSettingsService, this.telegramBot);
     this.adminPanel = new AdminPanel(this.instagramService, this.telegramBot);
-    this.landingAPI = new LandingAPI();
+    this.landingAPI = new LandingAPI(paidAccessStore);
   }
 
   async start() {

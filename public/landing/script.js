@@ -16,15 +16,73 @@ async function apiCall(endpoint, method = 'GET', data = null) {
     }
 }
 
-function setupJoinButtons() {
+function openTariffModal() {
+    const modal = document.getElementById('tariff-modal');
+    if (!modal) return;
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeTariffModal() {
+    const modal = document.getElementById('tariff-modal');
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+}
+
+function setupTariffModal() {
+    const modal = document.getElementById('tariff-modal');
+    const overlay = document.getElementById('tariff-modal-overlay');
+    const closeBtn = document.getElementById('tariff-modal-close');
+    if (!modal || !overlay) return;
+
+    // Открытие по кнопкам «Присоединиться к курсу»
     document.querySelectorAll('[id^="join-button"]').forEach(button => {
-        button.addEventListener('click', async () => {
-            const data = await apiCall(button.getAttribute('data-endpoint') || JOIN_ENDPOINT, 'POST', {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            openTariffModal();
+        });
+    });
+
+    // Закрытие по оверлею и кнопке
+    overlay.addEventListener('click', closeTariffModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeTariffModal);
+
+    // Закрытие по Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('is-open')) closeTariffModal();
+    });
+
+    // Оплата по выбранному тарифу
+    modal.querySelectorAll('.tariff-card__btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const card = btn.closest('.tariff-card');
+            if (!card) return;
+            const amount = card.getAttribute('data-amount');
+            const tariffId = card.getAttribute('data-tariff');
+            const description = card.getAttribute('data-description') || '';
+            if (!amount || Number(amount) <= 0) return;
+
+            btn.disabled = true;
+            btn.textContent = 'Переход к оплате...';
+            const data = await apiCall(JOIN_ENDPOINT, 'POST', {
+                amount: Number(amount),
+                tariffId,
+                description,
                 timestamp: new Date().toISOString(),
             });
-            if (data) {
-                if (data.redirect) window.location.href = data.redirect;
-                else if (data.message) alert(data.message);
+            btn.disabled = false;
+            btn.textContent = 'Оплатить';
+
+            if (data && data.redirect) {
+                closeTariffModal();
+                window.location.href = data.redirect;
+            } else if (data && data.message) {
+                alert(data.message);
+            } else {
+                alert('Не удалось создать платёж. Попробуйте позже.');
             }
         });
     });
@@ -45,7 +103,6 @@ function setupScrollReveal() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    setupJoinButtons();
+    setupTariffModal();
     setupScrollReveal();
 });
-

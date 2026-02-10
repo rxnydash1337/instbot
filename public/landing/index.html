@@ -354,6 +354,37 @@
         </div>
     </footer>
 
+    <!-- Модалка выбора тарифа -->
+    <div class="modal" id="tariff-modal" aria-hidden="true">
+        <div class="modal__overlay" id="tariff-modal-overlay"></div>
+        <div class="modal__box" role="dialog" aria-labelledby="modal-title">
+            <button type="button" class="modal__close" id="tariff-modal-close" aria-label="Закрыть">&times;</button>
+            <h2 class="modal__title" id="modal-title">Выберите тариф</h2>
+            <p class="modal__subtitle">Оплата через ЮKassa. После оплаты — доступ в Telegram-бот.</p>
+            <div class="tariff-grid" id="tariff-grid">
+                <div class="tariff-card" data-tariff="base" data-amount="4990" data-description="Базовый код спокойствия — тариф «Базовый»">
+                    <h3 class="tariff-card__name">Базовый</h3>
+                    <p class="tariff-card__desc">Полный курс, 7 модулей, материалы и бонус</p>
+                    <p class="tariff-card__price"><span class="tariff-card__amount">4 990</span> ₽</p>
+                    <button type="button" class="tariff-card__btn cta-button" data-tariff="base">Оплатить</button>
+                </div>
+                <div class="tariff-card tariff-card--popular" data-tariff="standard" data-amount="7990" data-description="Базовый код спокойствия — тариф «Стандарт»">
+                    <span class="tariff-card__badge">Популярный</span>
+                    <h3 class="tariff-card__name">Стандарт</h3>
+                    <p class="tariff-card__desc">Всё из Базового + разбор вопросов в чате</p>
+                    <p class="tariff-card__price"><span class="tariff-card__amount">7 990</span> ₽</p>
+                    <button type="button" class="tariff-card__btn cta-button" data-tariff="standard">Оплатить</button>
+                </div>
+                <div class="tariff-card" data-tariff="premium" data-amount="12990" data-description="Базовый код спокойствия — тариф «Премиум»">
+                    <h3 class="tariff-card__name">Премиум</h3>
+                    <p class="tariff-card__desc">Всё из Стандарта + персональная сессия</p>
+                    <p class="tariff-card__price"><span class="tariff-card__amount">12 990</span> ₽</p>
+                    <button type="button" class="tariff-card__btn cta-button" data-tariff="premium">Оплатить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="/landing/script.js"></script>
 </body>
 </html>

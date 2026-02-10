@@ -1192,6 +1192,128 @@ html { scroll-behavior: smooth; }
     margin-right: auto;
 }
 
+/* Модалка выбора тарифа */
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+.modal.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+.modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+.modal__box {
+    position: relative;
+    width: 100%;
+    max-width: 720px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: var(--bg);
+    border-radius: var(--radius-tilda);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    padding: 40px 32px 32px;
+}
+.modal__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.modal__close:hover {
+    color: var(--text);
+}
+.modal__title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 8px;
+}
+.modal__subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin: 0 0 28px;
+}
+.tariff-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+.tariff-card {
+    position: relative;
+    background: var(--bg-alt);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-tilda);
+    padding: 24px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.tariff-card:hover {
+    border-color: var(--primary-light);
+    box-shadow: var(--shadow-md);
+}
+.tariff-card--popular {
+    border-color: var(--primary);
+    background: var(--primary-soft);
+}
+.tariff-card__badge {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary-dark);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+}
+.tariff-card__name {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0 0 8px;
+}
+.tariff-card__desc {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin: 0 0 16px;
+    line-height: 1.45;
+}
+.tariff-card__price {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin: 0 0 16px;
+}
+.tariff-card__btn {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 0.95rem;
+}
+
 @media (max-width: 900px) {
     .media-block,
     .media-block--reverse {
@@ -1218,6 +1340,10 @@ html { scroll-behavior: smooth; }
     .program-card__thumb { max-width: 200px; }
 }
 
+@media (max-width: 700px) {
+    .tariff-grid { grid-template-columns: 1fr; }
+    .modal__box { padding: 28px 20px 24px; }
+}
 @media (max-width: 768px) {
     .t-block { padding: 60px 0; }
     .t-block-hero.header { padding: 70px 0 60px; }
