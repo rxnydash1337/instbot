@@ -167,19 +167,28 @@ class TelegramBotService {
     const opts = replyMarkup ? { reply_markup: replyMarkup } : {};
     if (media && media.url) {
       opts.caption = text;
+      const sendMedia = (options = opts) => {
+        if (media.type === 'photo') return this.bot.sendPhoto(chatId, media.url, options);
+        if (media.type === 'video') return this.bot.sendVideo(chatId, media.url, options);
+        if (media.type === 'document') return this.bot.sendDocument(chatId, media.url, options);
+        return this.bot.sendPhoto(chatId, media.url, options);
+      };
       try {
-        if (media.type === 'photo') {
-          await this.bot.sendPhoto(chatId, media.url, opts);
-        } else if (media.type === 'video') {
-          await this.bot.sendVideo(chatId, media.url, opts);
-        } else if (media.type === 'document') {
-          await this.bot.sendDocument(chatId, media.url, opts);
-        } else {
-          await this.bot.sendPhoto(chatId, media.url, opts);
-        }
+        await sendMedia();
       } catch (err) {
-        logger.error('Ошибка отправки медиа в Telegram', err.message, media.url);
-        await this.bot.sendMessage(chatId, text, replyMarkup ? { reply_markup: opts.reply_markup } : {});
+        const withButtons = replyMarkup && opts.reply_markup;
+        if (withButtons) {
+          try {
+            await sendMedia({ caption: text });
+            await this.bot.sendMessage(chatId, ' ', { reply_markup: opts.reply_markup });
+          } catch (err2) {
+            logger.warn('Медиа недоступно по URL для Telegram', err.message, media.url);
+            await this.bot.sendMessage(chatId, text, { reply_markup: opts.reply_markup });
+          }
+        } else {
+          logger.warn('Медиа недоступно по URL для Telegram', err.message, media.url);
+          await this.bot.sendMessage(chatId, text, opts);
+        }
       }
     } else {
       await this.bot.sendMessage(chatId, text, opts);

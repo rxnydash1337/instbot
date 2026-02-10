@@ -53,12 +53,15 @@ class InstagramGraphAPI {
   }
 
   async getRecentPosts(limit = 10) {
+    if (!this.instagramBusinessAccountId || !this.accessToken) {
+      return [];
+    }
     try {
       const url = `${this.graphURL}/${this.instagramBusinessAccountId}/media?` +
         `fields=id,caption,media_type,permalink,timestamp&` +
         `limit=${limit}&` +
         `access_token=${this.accessToken}`;
-      
+
       const data = await this.makeRequest(url);
       return data.data || [];
     } catch (error) {
