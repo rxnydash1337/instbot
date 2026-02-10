@@ -70,11 +70,20 @@ html { scroll-behavior: smooth; }
     width: 100%;
 }
 .t-block {
-    padding: 100px 0;
+    padding: 64px 0;
+}
+/* Убираем двойной отступ между подряд идущими секциями */
+.t-block + .t-block {
+    padding-top: 0;
 }
 .tilda-style .t-block--alt {
     background: var(--tilda-bg);
     position: relative;
+}
+/* Разделитель между секциями с одинаковым фоном */
+.tilda-style .t-block--alt + .t-block--alt {
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
 }
 .tilda-style .t-block--alt::before {
     content: '';
