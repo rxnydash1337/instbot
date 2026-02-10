@@ -233,7 +233,7 @@ function renderPosts(posts) {
                             </div>
                             <div class="form-group">
                                 <label class="form-label">URL редиректа</label>
-                                <input type="url" name="redirectUrl" class="form-input" value="${escapeHtml(post.settings?.redirectUrl || '')}" placeholder="t.me/бот?start=код">
+                                <input type="url" name="redirectUrl" class="form-input" value="${escapeHtml(post.settings?.redirectUrl || '')}" placeholder="t.me/instbotqqetest123_bot?start=код">
                             </div>
                         </div>
                         <div class="form-row form-row-media">
