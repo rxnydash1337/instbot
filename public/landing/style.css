@@ -19,6 +19,8 @@
     --shadow-tilda: 0 2px 24px rgba(0,0,0,0.06);
     --font-heading: 'Cormorant Garamond', Georgia, serif;
     --font-body: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-display: 'Montserrat', sans-serif;
+    --font-reading: 'Literata', Georgia, serif;
 }
 
 * {
@@ -82,11 +84,23 @@ html { scroll-behavior: smooth; }
     padding: 100px 0;
 }
 .tilda-style .section-title {
+    font-family: var(--font-display);
     font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+    font-weight: 700;
     margin-bottom: 32px;
     padding-bottom: 16px;
     border-bottom: 3px solid var(--primary);
     display: inline-block;
+    letter-spacing: -0.01em;
+}
+.tilda-style .section-title--serif {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: 0;
+}
+.tilda-style .section-title--reading {
+    font-family: var(--font-reading);
+    font-weight: 600;
 }
 .tilda-style .section-title--center {
     display: block;
@@ -203,11 +217,13 @@ html { scroll-behavior: smooth; }
     z-index: 1;
 }
 .hero-tagline {
-    font-size: 0.95rem;
-    text-transform: lowercase;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
     opacity: 0.95;
     margin-bottom: 12px;
-    letter-spacing: 0.02em;
 }
 .hero-buttons {
     display: flex;
@@ -275,13 +291,17 @@ html { scroll-behavior: smooth; }
 }
 .stats-strip .stat-number {
     display: block;
-    font-size: 1.75rem;
+    font-family: var(--font-display);
+    font-size: 2rem;
     font-weight: 700;
+    letter-spacing: -0.02em;
     color: var(--primary-dark);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 .stats-strip .stat-label {
+    font-family: var(--font-body);
     font-size: 0.9rem;
+    font-weight: 500;
     color: var(--text-muted);
 }
 
@@ -300,13 +320,19 @@ html { scroll-behavior: smooth; }
 }
 
 .subtitle {
-    font-size: 1.1rem;
+    font-family: var(--font-reading);
+    font-size: 1.2rem;
+    font-weight: 500;
+    line-height: 1.5;
     opacity: 0.95;
     margin-bottom: 16px;
 }
 
 .header-audience {
-    font-size: 0.95rem;
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
     opacity: 0.9;
     margin-bottom: 28px;
     max-width: 560px;
@@ -473,12 +499,25 @@ html { scroll-behavior: smooth; }
 }
 
 .block-lead {
-    font-size: 1.05rem;
+    font-size: 1.08rem;
+    line-height: 1.65;
     color: var(--text);
+}
+.block-lead--serif {
+    font-family: var(--font-reading);
+    font-size: 1.15rem;
+}
+.block-lead--heading {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 500;
 }
 
 .block-note {
+    font-family: var(--font-heading);
+    font-style: italic;
     font-weight: 500;
+    font-size: 1.05rem;
     color: var(--text);
 }
 
@@ -504,9 +543,11 @@ html { scroll-behavior: smooth; }
 }
 
 .sub-section-title {
+    font-family: var(--font-display);
     font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--primary);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--primary-dark);
     margin: 2rem 0 1rem;
 }
 .sub-section-title:first-of-type {
@@ -526,7 +567,8 @@ html { scroll-behavior: smooth; }
 }
 
 .author-name {
-    font-size: 1.35rem;
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
     font-weight: 700;
     color: var(--primary-dark);
     margin-bottom: 0.75rem;
@@ -603,7 +645,11 @@ html { scroll-behavior: smooth; }
     line-height: 1.4;
 }
 .quote-author {
-    font-size: 0.9rem;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
     color: var(--text-muted);
 }
 
@@ -635,6 +681,7 @@ html { scroll-behavior: smooth; }
     background: var(--primary-soft);
 }
 .for-whom-card span {
+    font-family: var(--font-display);
     font-weight: 600;
     color: var(--text);
     font-size: 0.95rem;
@@ -755,8 +802,9 @@ html { scroll-behavior: smooth; }
     margin-bottom: 8px;
 }
 .program-card__title {
+    font-family: var(--font-display);
     font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text);
     margin: 0 0 6px;
 }
@@ -770,9 +818,10 @@ html { scroll-behavior: smooth; }
     background: var(--primary-soft);
     border-radius: var(--radius);
     border: 1px solid var(--primary-light);
+    font-family: var(--font-reading);
     text-align: center;
     color: var(--text);
-    font-size: 0.98rem;
+    font-size: 1rem;
 }
 
 /* Author card */
@@ -808,9 +857,11 @@ html { scroll-behavior: smooth; }
     border-top: 1px solid var(--border);
 }
 .trust-strip__label {
+    font-family: var(--font-display);
     text-align: center;
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: 0.02em;
     color: var(--text);
     margin-bottom: 2rem;
 }
@@ -875,15 +926,21 @@ html { scroll-behavior: smooth; }
     max-width: 640px;
 }
 .cta-block__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
     color: white !important;
     margin-bottom: 1rem;
 }
 .cta-block__lead {
-    font-size: 1.1rem;
+    font-family: var(--font-reading);
+    font-size: 1.15rem;
     color: rgba(255,255,255,0.95);
     margin-bottom: 12px;
 }
 .cta-block__note {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 1.05rem;
     color: rgba(255,255,255,0.9);
     margin-bottom: 28px;
 }
