@@ -32,9 +32,13 @@ class TelegramBotService {
     }
 
     this.bot = new TelegramBot(config.telegram.botToken, { polling: true });
+    this._botUsername = null;
     this.postSettingsService = postSettingsService || new PostSettingsService();
     this.paidAccess = paidAccessStoreRef || paidAccessStore;
     this.setupHandlers();
+    this.bot.getMe().then((me) => {
+      this._botUsername = me.username || null;
+    }).catch(() => {});
     logger.info('Telegram бот запущен');
   }
 
@@ -126,7 +130,7 @@ class TelegramBotService {
 
   getBotUsername() {
     if (!this.bot) return null;
-    return this.bot.options.username;
+    return this._botUsername || this.bot.options?.username || null;
   }
 
   getBotUrl() {

@@ -71,13 +71,17 @@ body {
 .nav-item {
     display: block;
     padding: 12px 24px;
-    font-size: 15px;
-    color: var(--text);
+    font-size: 14px;
+    color: var(--text-muted);
+    border-left: 3px solid transparent;
+    margin-left: 0;
 }
 
 .nav-item.active {
     color: var(--accent);
     font-weight: 500;
+    border-left-color: var(--accent);
+    background: rgba(116, 196, 174, 0.06);
 }
 
 .sidebar-footer {
@@ -104,58 +108,67 @@ body {
 }
 
 .topbar {
-    padding: 20px 32px;
+    padding: 16px 28px;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: 20px;
+    flex-wrap: wrap;
+    background: var(--bg-card);
 }
 
 .topbar h1 {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
+    color: var(--text);
 }
 
 .telegram-badge {
-    font-size: 13px;
+    font-size: 12px;
     padding: 6px 12px;
-    border-radius: 20px;
-    background: var(--bg-hover);
+    border-radius: var(--radius-sm);
+    font-weight: 500;
 }
 
 .telegram-badge.ok {
-    background: rgba(0, 186, 124, 0.2);
+    background: rgba(0, 186, 124, 0.15);
     color: var(--success);
+    border: 1px solid rgba(0, 186, 124, 0.3);
 }
 
 .telegram-badge.err {
-    background: rgba(244, 33, 46, 0.2);
-    color: var(--danger);
+    background: rgba(139, 152, 165, 0.15);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
 }
 
 .content {
     flex: 1;
-    padding: 24px 32px;
+    padding: 28px 32px;
     overflow-y: auto;
 }
 
 .section-block {
-    margin-bottom: 32px;
-    padding-bottom: 32px;
-    border-bottom: 1px solid var(--border);
+    margin-bottom: 36px;
+    padding: 24px 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
 }
 
 .content-subtitle {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
+    color: var(--text);
 }
 
 .content-desc {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text-muted);
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+    line-height: 1.5;
 }
 
 .content-desc code {
@@ -178,10 +191,11 @@ body {
 }
 
 .word-form {
-    background: var(--bg-card);
+    margin-top: 20px;
+    padding: 24px 28px;
+    background: var(--bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 20px 24px;
 }
 
 .form-group-flex {
@@ -404,6 +418,24 @@ textarea {
     font-family: inherit;
 }
 
+.form-input-file,
+input[type="file"].form-input {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.form-input-file::-webkit-file-upload-button,
+input[type="file"].form-input::-webkit-file-upload-button {
+    padding: 6px 12px;
+    margin-right: 12px;
+    background: var(--bg-hover);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+}
+
 .form-textarea,
 textarea {
     resize: vertical;
@@ -466,7 +498,13 @@ input::placeholder, textarea::placeholder {
 }
 
 .form-row-media {
-    margin-top: 8px;
+    margin-top: 4px;
+}
+
+.form-row-media .form-group-flex {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .buttons-block {

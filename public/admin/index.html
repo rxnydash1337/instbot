@@ -45,19 +45,11 @@
                         </div>
                     </div>
                     <div class="form-row form-row-media">
-                        <div class="form-group">
-                            <label class="form-label">Медиа</label>
-                            <select name="telegramMediaType" class="form-input">
-                                <option value="">Нет</option>
-                                <option value="photo">Фото</option>
-                                <option value="video">Видео</option>
-                                <option value="document">Документ</option>
-                            </select>
-                        </div>
                         <div class="form-group form-group-flex">
-                            <label class="form-label">Загрузить файл</label>
-                            <input type="file" name="telegramMediaFile" id="word-media-file" class="form-input" accept="image/*,video/*,.pdf,.doc,.docx">
+                            <label class="form-label">Медиа (фото, видео или документ — тип определится по файлу)</label>
+                            <input type="file" name="telegramMediaFile" id="word-media-file" class="form-input form-input-file" accept="image/*,video/*,.pdf,.doc,.docx">
                             <input type="hidden" name="telegramMediaUrl" id="word-media-url">
+                            <input type="hidden" name="telegramMediaType" id="word-media-type">
                             <p class="form-hint" id="word-media-status"></p>
                         </div>
                     </div>

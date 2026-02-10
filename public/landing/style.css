@@ -29,6 +29,12 @@
     box-sizing: border-box;
 }
 
+img,
+.media-placeholder {
+    max-width: 100%;
+    height: auto;
+}
+
 body {
     font-family: var(--font-body);
     font-size: 1.25rem;
@@ -36,13 +42,14 @@ body {
     line-height: 1.65;
     background: var(--bg);
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
 }
 
 .container {
     width: 100%;
     max-width: none;
     margin: 0 auto;
-    padding: 0 40px;
+    padding: 0 clamp(16px, 5vw, 48px);
 }
 .container--wide {
     max-width: none;
@@ -55,8 +62,8 @@ html { scroll-behavior: smooth; }
 .tilda-style .container {
     max-width: none;
     width: 100%;
-    padding-left: 48px;
-    padding-right: 48px;
+    padding-left: clamp(16px, 5vw, 48px);
+    padding-right: clamp(16px, 5vw, 48px);
 }
 .tilda-style .container--wide {
     max-width: none;
@@ -247,6 +254,10 @@ html { scroll-behavior: smooth; }
     font-weight: 600;
     font-size: 0.95rem;
     transition: background 0.2s, color 0.2s;
+    min-height: 48px;
+    box-sizing: border-box;
+    text-align: center;
+    line-height: 1.25;
 }
 .cta-outline:hover {
     background: rgba(255,255,255,0.2);
@@ -355,6 +366,7 @@ html { scroll-behavior: smooth; }
     border-radius: var(--radius);
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
+    min-height: 48px;
 }
 
 .cta-button:hover {
@@ -511,6 +523,8 @@ html { scroll-behavior: smooth; }
 .block-lead {
     font-size: 1.35rem;
     line-height: 1.7;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
     color: var(--text);
 }
 .block-lead--serif {
@@ -1359,26 +1373,60 @@ html { scroll-behavior: smooth; }
     .tariff-grid { grid-template-columns: 1fr; }
     .modal__box { padding: 28px 20px 24px; }
 }
+
+/* Планшеты и крупные телефоны */
 @media (max-width: 768px) {
-    .t-block { padding: 60px 0; }
-    .t-block-hero.header { padding: 70px 0 60px; }
-    .t-block-cta.block-section.cta-block { padding: 60px 0; }
+    .t-block { padding: 56px 0; }
+    .t-block-hero.header { padding: 64px 0 52px; }
+    .t-block-cta.block-section.cta-block { padding: 56px 0; }
     .tilda-style .container { padding-left: 20px; padding-right: 20px; }
-    .header { padding: 60px 0; }
-    .hero-buttons { flex-direction: column; align-items: center; }
-    .stats-inner { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    .stat-card { padding: 20px 16px; }
+    .header { padding: 52px 0; }
+    .main-title { font-size: clamp(1.85rem, 8vw, 2.75rem); margin-bottom: 18px; }
+    .subtitle { font-size: 1.2rem; margin-bottom: 16px; }
+    .header-audience { font-size: 1rem; margin-bottom: 24px; }
+    .hero-tagline { font-size: 0.85rem; letter-spacing: 0.12em; margin-bottom: 12px; }
+    .hero-buttons {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        margin-top: 22px;
+    }
+    .hero-buttons .cta-button,
+    .hero-buttons .cta-outline {
+        width: 100%;
+        min-height: 48px;
+        padding: 14px 24px;
+        text-align: center;
+        font-size: 1rem;
+    }
+    .stats-inner { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .stat-card { padding: 20px 14px; }
     .stats-strip .stat-number { font-size: 1.5rem; }
-    .tilda-style .section-title { padding-bottom: 12px; border-bottom-width: 2px; }
+    .stats-strip .stat-label { font-size: 1rem; }
+    .tilda-style .section-title {
+        font-size: clamp(1.5rem, 5vw, 2.25rem);
+        padding-bottom: 12px;
+        border-bottom-width: 2px;
+        margin-bottom: 24px;
+    }
+    .block-lead { font-size: 1.05rem; }
     .benefit-cards { grid-template-columns: 1fr; }
-    .for-whom-cards { grid-template-columns: repeat(2, 1fr); }
+    .for-whom-cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        margin-top: 1.5rem;
+    }
+    .for-whom-card { padding: 20px 12px; min-height: 120px; }
+    .for-whom-card span { font-size: 0.95rem; }
     .result-cards { grid-template-columns: 1fr; }
     .format-cards { grid-template-columns: 1fr; }
-    .trust-strip__items { flex-direction: column; align-items: center; }
-    .block-section.cta-block { padding: 56px 0; }
+    .trust-strip__items { flex-direction: column; align-items: center; gap: 12px; }
+    .block-section.cta-block { padding: 48px 0; }
+    .cta-block__title { font-size: 1.5rem; }
+    .cta-block__lead { font-size: 1rem; }
     .gift-section, .reviews-section, .included-section,
     .for-whom-section, .stats-section, .final-cta-section {
-        padding: 48px 0;
+        padding: 44px 0;
     }
     .reviews-container, .included-content, .for-whom-content {
         grid-template-columns: 1fr;
@@ -1386,11 +1434,53 @@ html { scroll-behavior: smooth; }
     .footer-grid {
         grid-template-columns: 1fr;
         text-align: center;
+        gap: 24px;
     }
     .footer-col-left,
     .footer-col-center,
-    .footer-col-right {
-        text-align: center;
-    }
+    .footer-col-right { text-align: center; }
     .footer-icons { justify-content: center; }
+    .modal__box { padding: 24px 20px 20px; }
+    .modal__title { font-size: 1.4rem; }
+}
+
+/* Телефоны (узкий экран) */
+@media (max-width: 480px) {
+    body { font-size: 1.1rem; }
+    .tilda-style .container { padding-left: 16px; padding-right: 16px; }
+    .t-block { padding: 40px 0; }
+    .t-block-hero.header { padding: 44px 0 40px; }
+    .t-block-cta.block-section.cta-block { padding: 40px 0; }
+    .main-title { font-size: 1.75rem; margin-bottom: 14px; }
+    .subtitle { font-size: 1.1rem; margin-bottom: 12px; }
+    .header-audience { font-size: 0.95rem; margin-bottom: 20px; }
+    .hero-tagline { font-size: 0.75rem; letter-spacing: 0.08em; }
+    .hero-buttons .cta-button,
+    .hero-buttons .cta-outline { min-height: 44px; padding: 12px 20px; }
+    .stats-inner { grid-template-columns: 1fr; gap: 12px; }
+    .stat-card { padding: 18px 16px; }
+    .stats-strip .stat-number { font-size: 1.4rem; }
+    .tilda-style .section-title { font-size: 1.4rem; margin-bottom: 18px; }
+    .block-lead { font-size: 1rem; }
+    .for-whom-cards {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 1.25rem;
+    }
+    .for-whom-card { padding: 18px 16px; min-height: auto; }
+    .for-whom-card span { font-size: 1rem; }
+    .block-lead.block-lead--serif.center { font-size: 1rem; }
+    .media-block__image { min-height: 180px; }
+    .quote-block { padding: 28px 20px; }
+    .author-card__photo { width: min(280px, 100%); }
+    .program-card__thumb { max-width: 100%; }
+    .trust-item { padding: 12px 16px; font-size: 0.85rem; }
+    .cta-block__title { font-size: 1.35rem; }
+    .cta-block__lead { font-size: 0.95rem; }
+    .modal__box { padding: 20px 16px 16px; }
+    .modal__title { font-size: 1.25rem; }
+    .tariff-card { padding: 18px; }
+    .tariff-card__name { font-size: 1.2rem; }
+    .tariff-card__price { font-size: 1.35rem; }
+    .footer-telegram-btn { padding: 12px 24px; font-size: 0.9rem; }
 }

@@ -115,6 +115,14 @@ function addWordButtonRow(text, url) {
     list.appendChild(row);
 }
 
+function mediaTypeFromFile(file) {
+    if (!file || !file.type) return 'document';
+    const t = (file.type || '').toLowerCase();
+    if (t.startsWith('image/')) return 'photo';
+    if (t.startsWith('video/')) return 'video';
+    return 'document';
+}
+
 async function saveWord(event) {
     event.preventDefault();
     const form = document.getElementById('word-form');
@@ -122,7 +130,7 @@ async function saveWord(event) {
     if (!codeWord) return;
     const mediaType = (form.telegramMediaType && form.telegramMediaType.value) || '';
     const mediaUrl = (form.telegramMediaUrl && form.telegramMediaUrl.value && form.telegramMediaUrl.value.trim()) || '';
-    const telegramMedia = mediaType && mediaUrl ? { type: mediaType, url: mediaUrl } : null;
+    const telegramMedia = mediaUrl ? { type: mediaType || 'document', url: mediaUrl } : null;
     const telegramButtons = collectWordButtons();
     const data = {
         codeWord,
@@ -144,8 +152,9 @@ async function saveWord(event) {
             form.codeWord.value = '';
             form.telegramMessage.value = '';
             form.enabled.checked = true;
-            if (form.telegramMediaType) form.telegramMediaType.value = '';
             const urlInput = document.getElementById('word-media-url');
+            const typeInput = document.getElementById('word-media-type');
+            if (typeInput) typeInput.value = '';
             if (urlInput) urlInput.value = '';
             const fileInput = document.getElementById('word-media-file');
             if (fileInput) fileInput.value = '';
@@ -237,19 +246,11 @@ function renderPosts(posts) {
                             </div>
                         </div>
                         <div class="form-row form-row-media">
-                            <div class="form-group">
-                                <label class="form-label">Медиа</label>
-                                <select name="telegramMediaType" class="form-input">
-                                    <option value="">Нет</option>
-                                    <option value="photo" ${(post.settings?.telegramMedia?.type || '') === 'photo' ? 'selected' : ''}>Фото</option>
-                                    <option value="video" ${(post.settings?.telegramMedia?.type || '') === 'video' ? 'selected' : ''}>Видео</option>
-                                    <option value="document" ${(post.settings?.telegramMedia?.type || '') === 'document' ? 'selected' : ''}>Документ</option>
-                                </select>
-                            </div>
                             <div class="form-group form-group-flex">
-                                <label class="form-label">Загрузить файл</label>
-                                <input type="file" class="form-input media-file-input" accept="image/*,video/*,.pdf,.doc,.docx">
+                                <label class="form-label">Медиа (фото, видео или документ — тип по файлу)</label>
+                                <input type="file" class="form-input form-input-file media-file-input" accept="image/*,video/*,.pdf,.doc,.docx">
                                 <input type="hidden" name="telegramMediaUrl" value="${escapeHtml(post.settings?.telegramMedia?.url || '')}">
+                                <input type="hidden" name="telegramMediaType" value="${escapeHtml(post.settings?.telegramMedia?.type || '')}">
                                 <p class="form-hint media-file-status"></p>
                             </div>
                         </div>
@@ -321,7 +322,7 @@ async function saveSettings(event, postId) {
     }
     const mediaType = (form.telegramMediaType && form.telegramMediaType.value) || '';
     const mediaUrl = (form.telegramMediaUrl && form.telegramMediaUrl.value && form.telegramMediaUrl.value.trim()) || '';
-    const telegramMedia = mediaType && mediaUrl ? { type: mediaType, url: mediaUrl } : null;
+    const telegramMedia = mediaUrl ? { type: mediaType || 'document', url: mediaUrl } : null;
     const telegramButtons = collectFormButtons(form);
     const data = {
         codeWord,
@@ -383,10 +384,13 @@ document.getElementById('word-add-button')?.addEventListener('click', () => addW
 document.getElementById('word-media-file')?.addEventListener('change', async function() {
     const file = this.files?.[0];
     const urlInput = document.getElementById('word-media-url');
+    const typeInput = document.getElementById('word-media-type');
     const status = document.getElementById('word-media-status');
-    urlInput.value = '';
+    if (urlInput) urlInput.value = '';
+    if (typeInput) typeInput.value = '';
     status.textContent = '';
     if (!file) return;
+    typeInput.value = mediaTypeFromFile(file);
     status.textContent = 'Загрузка...';
     const fd = new FormData();
     fd.append('file', file);
@@ -423,11 +427,14 @@ document.getElementById('posts-container')?.addEventListener('change', async fun
     const file = input.files?.[0];
     const form = input.closest('form');
     const urlInput = form?.querySelector('input[name="telegramMediaUrl"]');
+    const typeInput = form?.querySelector('input[name="telegramMediaType"]');
     const status = form?.querySelector('.media-file-status');
     if (!urlInput || !form) return;
     urlInput.value = '';
+    if (typeInput) typeInput.value = '';
     if (status) status.textContent = '';
     if (!file) return;
+    if (typeInput) typeInput.value = mediaTypeFromFile(file);
     if (status) status.textContent = 'Загрузка...';
     const fd = new FormData();
     fd.append('file', file);
