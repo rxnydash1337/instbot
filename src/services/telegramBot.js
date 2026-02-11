@@ -33,8 +33,28 @@ class TelegramBotService {
 
     this.bot = new TelegramBot(config.telegram.botToken, { polling: true });
     this._botUsername = null;
+    this._pollingRestartTimeout = null;
     this.postSettingsService = postSettingsService || new PostSettingsService();
     this.paidAccess = paidAccessStoreRef || paidAccessStore;
+
+    this.bot.on('polling_error', (err) => {
+      const msg = err.message || String(err);
+      const isFatal = err.code === 'EFATAL' || /ECONNRESET|ETIMEDOUT|socket hang up|ECONNREFUSED/i.test(msg);
+      if (isFatal) {
+        logger.warn('Telegram polling ошибка, перезапуск через 5 сек.', msg);
+        if (this._pollingRestartTimeout) clearTimeout(this._pollingRestartTimeout);
+        this.bot.stopPolling().catch(() => {});
+        this._pollingRestartTimeout = setTimeout(() => {
+          this._pollingRestartTimeout = null;
+          this.bot.startPolling()
+            .then(() => logger.info('Telegram polling перезапущен'))
+            .catch((e) => logger.error('Ошибка перезапуска Telegram polling', e.message || e));
+        }, 5000);
+      } else {
+        logger.warn('Telegram polling_error', msg);
+      }
+    });
+
     this.setupHandlers();
     this.bot.getMe().then((me) => {
       this._botUsername = me.username || null;
