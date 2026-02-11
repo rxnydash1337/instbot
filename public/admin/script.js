@@ -148,7 +148,7 @@ async function saveWord(event) {
         });
         const result = await res.json();
         if (result.success) {
-            toast('Сохранено');
+            toast(result.updated ? 'Обновлено' : 'Добавлено. Введите следующее слово и нажмите «Добавить».');
             form.codeWord.value = '';
             form.telegramMessage.value = '';
             form.enabled.checked = true;
@@ -162,6 +162,8 @@ async function saveWord(event) {
             if (mediaStatus) mediaStatus.textContent = '';
             document.getElementById('word-buttons-list').innerHTML = '';
             loadWords();
+            var codeInput = form.codeWord;
+            if (codeInput) { codeInput.focus(); }
         } else {
             toast(result.error || 'Ошибка', 'error');
         }

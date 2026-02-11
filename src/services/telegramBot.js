@@ -164,34 +164,27 @@ class TelegramBotService {
         }
       : undefined;
 
-    const opts = replyMarkup ? { reply_markup: replyMarkup } : {};
+    const hasButtons = replyMarkup && replyMarkup.inline_keyboard && replyMarkup.inline_keyboard.length > 0;
+
     if (media && media.url) {
-      opts.caption = text;
-      const sendMedia = (options = opts) => {
-        if (media.type === 'photo') return this.bot.sendPhoto(chatId, media.url, options);
-        if (media.type === 'video') return this.bot.sendVideo(chatId, media.url, options);
-        if (media.type === 'document') return this.bot.sendDocument(chatId, media.url, options);
-        return this.bot.sendPhoto(chatId, media.url, options);
+      const sendMedia = (options) => {
+        const opts = options || { caption: text };
+        if (media.type === 'photo') return this.bot.sendPhoto(chatId, media.url, opts);
+        if (media.type === 'video') return this.bot.sendVideo(chatId, media.url, opts);
+        if (media.type === 'document') return this.bot.sendDocument(chatId, media.url, opts);
+        return this.bot.sendPhoto(chatId, media.url, opts);
       };
       try {
-        await sendMedia();
-      } catch (err) {
-        const withButtons = replyMarkup && opts.reply_markup;
-        if (withButtons) {
-          try {
-            await sendMedia({ caption: text });
-            await this.bot.sendMessage(chatId, ' ', { reply_markup: opts.reply_markup });
-          } catch (err2) {
-            logger.warn('Медиа недоступно по URL для Telegram', err.message, media.url);
-            await this.bot.sendMessage(chatId, text, { reply_markup: opts.reply_markup });
-          }
-        } else {
-          logger.warn('Медиа недоступно по URL для Telegram', err.message, media.url);
-          await this.bot.sendMessage(chatId, text, opts);
+        await sendMedia({ caption: text });
+        if (hasButtons) {
+          await this.bot.sendMessage(chatId, '\u200b', { reply_markup: replyMarkup });
         }
+      } catch (err) {
+        logger.warn('Медиа недоступно по URL для Telegram', err.message, media.url);
+        await this.bot.sendMessage(chatId, text, hasButtons ? { reply_markup: replyMarkup } : {});
       }
     } else {
-      await this.bot.sendMessage(chatId, text, opts);
+      await this.bot.sendMessage(chatId, text, hasButtons ? { reply_markup: replyMarkup } : {});
     }
   }
 }

@@ -182,15 +182,21 @@ class AdminPanel {
       if (!finalRedirectUrl && this.telegramBotService?.getBotStartUrl) {
         finalRedirectUrl = this.telegramBotService.getBotStartUrl(word);
       }
+      let mediaToSave = telegramMedia && telegramMedia.url ? { ...telegramMedia } : null;
+      if (mediaToSave && mediaToSave.url && !mediaToSave.url.startsWith('http')) {
+        const base = (config.publicUrl || '').replace(/\/$/, '');
+        mediaToSave.url = base ? base + (mediaToSave.url.startsWith('/') ? mediaToSave.url : '/' + mediaToSave.url) : mediaToSave.url;
+      }
+      const existed = this.postSettingsService.getWordSettings(word);
       const success = this.postSettingsService.setWordSettings(word, {
         telegramMessage,
         redirectUrl: finalRedirectUrl,
         enabled: enabled !== false,
-        telegramMedia: telegramMedia && telegramMedia.url ? telegramMedia : null,
+        telegramMedia: mediaToSave,
         telegramButtons: Array.isArray(telegramButtons) ? telegramButtons : [],
       });
       if (success) {
-        res.json({ success: true, message: 'Сохранено' });
+        res.json({ success: true, message: existed ? 'Обновлено' : 'Сохранено', updated: !!existed });
       } else {
         res.status(500).json({ error: 'Ошибка сохранения' });
       }
@@ -230,13 +236,19 @@ class AdminPanel {
         finalRedirectUrl = this.telegramBotService.getBotStartUrl(codeWord);
       }
 
+      let mediaToSave = telegramMedia && telegramMedia.url ? { ...telegramMedia } : null;
+      if (mediaToSave && mediaToSave.url && !mediaToSave.url.startsWith('http')) {
+        const base = (config.publicUrl || '').replace(/\/$/, '');
+        mediaToSave.url = base ? base + (mediaToSave.url.startsWith('/') ? mediaToSave.url : '/' + mediaToSave.url) : mediaToSave.url;
+      }
+
       const success = this.postSettingsService.setPostSettings(postId, codeWord, {
         commentReply,
         directReply,
         redirectUrl: finalRedirectUrl,
         telegramMessage,
         enabled,
-        telegramMedia: telegramMedia && telegramMedia.url ? telegramMedia : null,
+        telegramMedia: mediaToSave,
         telegramButtons: Array.isArray(telegramButtons) ? telegramButtons : [],
       });
 
